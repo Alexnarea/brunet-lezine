@@ -12,8 +12,8 @@ import {
 import type { Evaluator, EvaluatorPayload } from "../models/Evaluator";
 import evaluatorsService from "../service/EvaluatorsService";
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
+class ErrorBoundary extends Component<{ evaluator: ReactNode }, { hasError: boolean }> {
+  constructor(props: { evaluator: ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -30,7 +30,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     if (this.state.hasError) {
       return <div style={{ padding: 20, color: "red" }}>Ocurrió un error al mostrar la tabla.</div>;
     }
-    return this.props.children;
+    return this.props.evaluator;
   }
 }
 
@@ -138,7 +138,7 @@ const EvaluatorsPage: React.FC = () => {
         Nuevo Evaluador
       </Button>
 
-      <ErrorBoundary>
+      <ErrorBoundary evaluator={undefined}>
         <Table
           dataSource={evaluators}
           columns={columns}
