@@ -3,6 +3,7 @@ import { Layout, Menu } from "antd";
 import HomePage from "./pages/HomePage";
 import ChildrenPage from "./pages/ChildrenPage";
 import { Link } from "react-router-dom";
+import EvaluatorsPage from "./pages/EvaluatorsPage";
 
 const { Header, Content, Footer } = Layout;
 
@@ -24,6 +25,9 @@ const App = () => {
           <Menu.Item key="/children">
             <Link to="/children">Niños</Link>
           </Menu.Item>
+          <Menu.Item key="/Evaluator">
+            <Link to="/">Evaluador</Link>
+          </Menu.Item>
         </Menu>
       </Header>
 
@@ -31,8 +35,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/children" element={<ChildrenPage />} />
+          <Route path="/Evaluator" element={<EvaluatorsPage/>} />
         </Routes>
       </Content>
+
+      
 
       <Footer style={{ textAlign: "center" }}>
         Brunet-Lézine ©2025 - Proyecto Escuela

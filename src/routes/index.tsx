@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import ChildrenPage from "../pages/ChildrenPage";
 import LoginPage from "../pages/LoginPage";
+import EvaluatorsPage from "../pages/EvaluatorsPage";
 
 
 const AppRouter = () => {
@@ -12,6 +13,7 @@ const AppRouter = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />} />
       <Route path="/children" element={<ChildrenPage />} />
+      <Route path="/evaluator" element={<EvaluatorsPage/>}/>
       {/* Agrega más rutas aquí */}
     </Routes>
   );
