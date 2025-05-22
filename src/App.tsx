@@ -25,8 +25,8 @@ const App = () => {
           <Menu.Item key="/children">
             <Link to="/children">Niños</Link>
           </Menu.Item>
-          <Menu.Item key="/Evaluator">
-            <Link to="/">Evaluador</Link>
+          <Menu.Item key="/Evaluators">
+            <Link to="/Evaluators">Evaluador</Link>
           </Menu.Item>
         </Menu>
       </Header>

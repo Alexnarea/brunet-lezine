@@ -9,11 +9,11 @@ import {
   message,
   Popconfirm,
 } from "antd";
-import type { Evaluator, EvaluatorPayload } from "../models/Evaluator";
+import type {Evaluator, EvaluatorPayload } from "../models/Evaluator";
 import evaluatorsService from "../service/EvaluatorsService";
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
 
-class ErrorBoundary extends Component<{ evaluator: ReactNode }, { hasError: boolean }> {
-  constructor(props: { evaluator: ReactNode }) {
+  constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -30,7 +30,7 @@ class ErrorBoundary extends Component<{ evaluator: ReactNode }, { hasError: bool
     if (this.state.hasError) {
       return <div style={{ padding: 20, color: "red" }}>Ocurrió un error al mostrar la tabla.</div>;
     }
-    return this.props.evaluator;
+    return this.props.children;
   }
 }
 
@@ -57,10 +57,10 @@ const EvaluatorsPage: React.FC = () => {
     loadEvaluators();
   }, []);
 
-  const openModal = (evaluator?: Evaluator) => {
-    setEditingEvaluator(evaluator || null);
-    if (evaluator) {
-      form.setFieldsValue({ ...evaluator });
+  const openModal = (evaluators?: Evaluator) => {
+    setEditingEvaluator(evaluators || null);
+    if (evaluators) {
+      form.setFieldsValue({ ...evaluators });
     } else {
       form.resetFields();
     }
@@ -138,13 +138,13 @@ const EvaluatorsPage: React.FC = () => {
         Nuevo Evaluador
       </Button>
 
-      <ErrorBoundary evaluator={undefined}>
+      <ErrorBoundary>
         <Table
           dataSource={evaluators}
           columns={columns}
           rowKey="id"
           loading={loading}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 4 }}
         />
       </ErrorBoundary>
 

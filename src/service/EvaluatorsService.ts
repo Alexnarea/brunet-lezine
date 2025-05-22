@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { EvaluatorPayload, Evaluator } from "../models/Evaluator";
+import type { Evaluator ,EvaluatorPayload  } from "../models/Evaluator";
 
 const BASE_URL = "http://localhost:8082/evaluators";
 

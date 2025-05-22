@@ -13,7 +13,7 @@ const AppRouter = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />} />
       <Route path="/children" element={<ChildrenPage />} />
-      <Route path="/evaluator" element={<EvaluatorsPage/>}/>
+      <Route path="/Evaluators" element={<EvaluatorsPage/>}/>
       {/* Agrega más rutas aquí */}
     </Routes>
   );
