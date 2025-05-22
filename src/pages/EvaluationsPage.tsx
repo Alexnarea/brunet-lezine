@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Layout from '../components/layout/Layout';
+import Layout from '../layout/MainLayout';
 import Button from '../components/shared/Button';
 
 type EvaluationItem = {
@@ -30,7 +30,7 @@ const testItemsByAge: Record<number, Omit<EvaluationItem, 'completed'>[]> = {
   ]
 };
 
-const EvaluacionNueva: React.FC = () => {
+const EvaluacionPage: React.FC = () => {
   const { edad } = useParams(); // espera una ruta como /evaluacion/edad-4
   const parsedEdad = parseInt(edad || '4');
 
@@ -118,4 +118,4 @@ const EvaluacionNueva: React.FC = () => {
   );
 };
 
-export default EvaluacionNueva;
+export default EvaluacionPage;
