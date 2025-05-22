@@ -94,6 +94,12 @@ const EvaluatorsPage: React.FC = () => {
   };
 
   const columns = [
+    //define columna id     
+     {
+      title: "id",
+      dataIndex: "id",
+      key: "id",
+    },
     {
       title: "Nombre completo",
       dataIndex: "fullName",

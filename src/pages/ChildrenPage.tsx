@@ -78,6 +78,7 @@ const ChildrenPage: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const payload: ChildPayload = {
+      id:values.id,
       fullName: values.fullName,
       nui: values.nui,
       birthdate: values.birthdate.format("YYYY-MM-DD"),
@@ -110,6 +111,12 @@ const ChildrenPage: React.FC = () => {
   };
 
   const columns = [
+    // una columna para el id
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
     {
       title: "Nombre completo",
       dataIndex: "fullName",

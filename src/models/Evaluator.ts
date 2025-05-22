@@ -1,4 +1,5 @@
 export interface EvaluatorPayload {
+  id: number;
   fullName: string;
   specialization: string;
   email: string;

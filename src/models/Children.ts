@@ -1,5 +1,6 @@
 // src/models/Children.ts
 export interface ChildPayload {
+  id: number;
   fullName: string;
   nui: string;
   birthdate: string;
