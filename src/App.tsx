@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage";
 import ChildrenPage from "./pages/ChildrenPage";
 import { Link } from "react-router-dom";
 import EvaluatorsPage from "./pages/EvaluatorsPage";
-
+import EvaluationsPage from "./pages/EvaluationsPage";
 const { Header, Content, Footer } = Layout;
 
 const App = () => {
@@ -28,6 +28,9 @@ const App = () => {
           <Menu.Item key="/Evaluators">
             <Link to="/Evaluator">Evaluador</Link>
           </Menu.Item>
+          <Menu.Item key="/Evaluation">
+            <Link to="/Evaluation">Evaluacion</Link>
+          </Menu.Item>
         </Menu>
       </Header>
 
@@ -36,6 +39,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/children" element={<ChildrenPage />} />
           <Route path="/Evaluator" element={<EvaluatorsPage/>} />
+          <Route path="/Evaluation" element={<EvaluationsPage/>} />
         </Routes>
       </Content>
 

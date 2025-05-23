@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Layout from '../layout/MainLayout';
-import Button from '../components/shared/Button';
+import { Table, Button, Input, message, Card } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import type { Evaluation } from '../models/Evaluation';
 
-type EvaluationItem = {
-  id: string;
-  task: string;
-  domain: string;
-  reinforcement: string;
-  completed: boolean;
-};
-
-const testItemsByAge: Record<number, Omit<EvaluationItem, 'completed'>[]> = {
+const testItemsByAge: Record<number, Omit<Evaluation, 'completed'>[]> = {
   4: [
     { id: 't1', task: 'Copia un cuadrado', domain: 'Motricidad', reinforcement: 'Practicar figuras geométricas' },
     { id: 't2', task: 'Dobla un papel en diagonal', domain: 'Motricidad', reinforcement: 'Origami simple' },
@@ -30,11 +23,11 @@ const testItemsByAge: Record<number, Omit<EvaluationItem, 'completed'>[]> = {
   ]
 };
 
-const EvaluacionPage: React.FC = () => {
-  const { edad } = useParams(); // espera una ruta como /evaluacion/edad-4
-  const parsedEdad = parseInt(edad || '4');
 
-  const [items, setItems] = useState<EvaluationItem[]>([]);
+const EvaluacionPage: React.FC = () => {
+  const { edad } = useParams();
+  const parsedEdad = parseInt(edad || '4');
+  const [items, setItems] = useState<Evaluation[]>([]);
   const [observaciones, setObservaciones] = useState('');
 
   useEffect(() => {
@@ -43,11 +36,7 @@ const EvaluacionPage: React.FC = () => {
   }, [parsedEdad]);
 
   const handleToggle = (id: string) => {
-    setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
+    setItems(prev => prev.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
   };
 
   const calcularProgreso = () => {
@@ -55,7 +44,7 @@ const EvaluacionPage: React.FC = () => {
     return Math.round((completados / items.length) * 100);
   };
 
-  const edadReal = parsedEdad; // Puedes calcularlo si tienes birthDate
+  const edadReal = parsedEdad;
   const edadDesarrollo = Math.round((items.filter(i => i.completed).length / items.length) * edadReal);
   const coeficiente = edadReal > 0 ? Math.round((edadDesarrollo / edadReal) * 100) : 0;
 
@@ -69,52 +58,66 @@ const EvaluacionPage: React.FC = () => {
       coeficiente
     };
     console.log('Guardar evaluación:', evaluacionFinal);
-    alert('Evaluación guardada (simulada)');
+    message.success('Evaluación guardada (simulada)');
   };
 
+  const columns: ColumnsType<EvaluationItem> = [
+    {
+      title: 'Tarea',
+      dataIndex: 'task',
+      key: 'task',
+    },
+    {
+      title: 'Dominio',
+      dataIndex: 'domain',
+      key: 'domain',
+    },
+    {
+      title: 'Refuerzo',
+      dataIndex: 'reinforcement',
+      key: 'reinforcement',
+    },
+    {
+      title: 'Completado',
+      key: 'completed',
+      render: (_, record) => (
+        <input
+          type="checkbox"
+          checked={record.completed}
+          onChange={() => handleToggle(record.id)}
+        />
+      ),
+    },
+  ];
+
   return (
-    <Layout title="Test Brunet-Lézine">
-      <div className="p-4 max-w-3xl mx-auto space-y-4">
-        <div className="bg-yellow-300 rounded p-4 text-sm font-medium space-y-2">
-          <div>Nombre: <span className="font-normal">Nombre Completo</span></div>
-          <div>Fecha de Nacimiento: 0000-00-00</div>
-          <div>Fecha de Evaluación: 0000-00-00</div>
-          <div className="flex gap-4">
-            <span>Edad Real: {edadReal}</span>
-            <span>Edad Desarrollo: {edadDesarrollo}</span>
-            <span>Coeficiente Desarrollo: {coeficiente}</span>
-          </div>
-        </div>
+    <div style={{ padding: 24 }}>
+      <Card title="Resumen de evaluación" style={{ marginBottom: 16 }}>
+        <p>Edad real: {edadReal}</p>
+        <p>Edad de desarrollo: {edadDesarrollo}</p>
+        <p>Coeficiente de desarrollo: {coeficiente}</p>
+      </Card>
 
-        <div className="bg-gray-100 rounded p-4">
-          {items.map((item, idx) => (
-            <div key={item.id} className="flex items-center justify-between py-2 border-b">
-              <div>
-                <div className="font-medium">{idx + 1}. {item.task}</div>
-                <div className="text-xs text-gray-600">{item.domain}</div>
-              </div>
-              <input
-                type="checkbox"
-                checked={item.completed}
-                onChange={() => handleToggle(item.id)}
-              />
-            </div>
-          ))}
-        </div>
+      <Table
+        dataSource={items}
+        columns={columns}
+        rowKey="id"
+        pagination={false}
+      />
 
-        <div className="bg-yellow-100 p-3 rounded">
-          <label className="block font-semibold mb-1">Observaciones:</label>
-          <textarea
-            rows={3}
-            value={observaciones}
-            onChange={(e) => setObservaciones(e.target.value)}
-            className="w-full p-2 rounded border"
-          />
-        </div>
-
-        <Button onClick={handleGuardar}>Guardar</Button>
+      <div style={{ marginTop: 16 }}>
+        <label><strong>Observaciones:</strong></label>
+        <Input.TextArea
+          value={observaciones}
+          onChange={(e) => setObservaciones(e.target.value)}
+          rows={3}
+        />
       </div>
-    </Layout>
+
+      <Button type="primary" onClick={handleGuardar} style={{ marginTop: 16 }}>
+        Guardar evaluación
+      </Button>
+    </div>
   );
 };
 
