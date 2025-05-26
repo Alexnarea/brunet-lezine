@@ -15,6 +15,11 @@ import {
 import moment from "moment";
 import type { Children, ChildPayload } from "../models/Children";
 import childrenService from "../service/ChildrenService";
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
 const { Option } = Select;
 
@@ -41,6 +46,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 }
 
 const ChildrenPage: React.FC = () => {
+  const navigate = useNavigate();
   const [children, setChildren] = useState<Children[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -108,19 +114,27 @@ const ChildrenPage: React.FC = () => {
     } catch (error) {
       message.error("Error eliminando niño");
     }
+    
   };
 
   const columns = [
+    
     // una columna para el id
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+        render: (text: string, record: Children) => (
+    <a onClick={() => navigate(`/children/${record.id}`)} style={{ color: '#1677ff', cursor: 'pointer' }}>
+      {text}
+    </a>
+  ),
     },
     {
       title: "Nombre completo",
       dataIndex: "fullName",
       key: "fullName",
+     
     },
     {
       title: "NUI",

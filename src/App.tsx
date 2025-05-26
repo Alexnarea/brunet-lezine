@@ -5,6 +5,9 @@ import ChildrenPage from "./pages/ChildrenPage";
 import { Link } from "react-router-dom";
 import EvaluatorsPage from "./pages/EvaluatorsPage";
 import EvaluationsPage from "./pages/EvaluationsPage";
+import EvaluationDetail from "./pages/perfilChildren";
+import ChildDetail from "./pages/perfilChildren";
+import EvaluacionPage from "./pages/EvaluationsPage";
 const { Header, Content, Footer } = Layout;
 
 const App = () => {
@@ -38,8 +41,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/children" element={<ChildrenPage />} />
+          <Route path="/children/:id" element={<ChildDetail/>} />
           <Route path="/Evaluator" element={<EvaluatorsPage/>} />
           <Route path="/Evaluation" element={<EvaluationsPage/>} />
+          <Route path="/Evaluation/:id" element={<EvaluationsPage/>} />
+          <Route path="/evaluations/new/:childId" element={<EvaluacionPage />} />
+          {/* Agrega más rutas aquí */}
         </Routes>
       </Content>
 

@@ -2,11 +2,16 @@
 import axios from "axios";
 import type { ChildPayload, Children } from "../models/Children";
 
-const BASE_URL = "https://682e7f8a746f8ca4a47d3608.mockapi.io/children/children";
+const BASE_URL = "http://682e7f8a746f8ca4a47d3608.mockapi.io/children/children";
 
 const childrenService = {
   getAll: async (): Promise<Children[]> => {
     const response = await axios.get(BASE_URL);
+    return response.data;
+  },
+
+  getById: async (id: string): Promise<Children> => {
+    const response = await axios.get(`${BASE_URL}/${id}`);
     return response.data;
   },
 
