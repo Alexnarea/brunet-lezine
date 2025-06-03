@@ -11,28 +11,6 @@ import {
 } from "antd";
 import type {Evaluator, EvaluatorPayload } from "../models/Evaluator";
 import evaluatorsService from "../service/EvaluatorsService";
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Error en EvaluatorsPage:", error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <div style={{ padding: 20, color: "red" }}>Ocurrió un error al mostrar la tabla.</div>;
-    }
-    return this.props.children;
-  }
-}
 
 const EvaluatorsPage: React.FC = () => {
   const [evaluators, setEvaluators] = useState<Evaluator[]>([]);
@@ -94,109 +72,64 @@ const EvaluatorsPage: React.FC = () => {
   };
 
   const columns = [
-    //define columna id     
-     {
-      title: "id",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Nombre completo",
-      dataIndex: "fullName",
-      key: "fullName",
-    },
-    {
-      title: "Especialidad",
-      dataIndex: "specialization",
-      key: "specialization",
-    },
-    {
-      title: "Correo",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Acciones",
-      key: "actions",
-      render: (_: any, record: Evaluator) => (
-        <>
-          <Button type="link" onClick={() => openModal(record)}>
-            Editar
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Especialidad",
+    dataIndex: "specialization",
+    key: "specialization",
+  },
+  {
+    title: "Fecha de creación",
+    dataIndex: "creationDate",
+    key: "creationDate",
+  },
+  {
+    title: "Acciones",
+    key: "actions",
+    render: (_: any, record: Evaluator) => (
+      <>
+        <Button type="link" onClick={() => openModal(record)}>
+          Editar
+        </Button>
+        <Popconfirm
+          title="¿Estás seguro de eliminar?"
+          onConfirm={() => onDelete(record.id)}
+          okText="Sí"
+          cancelText="No"
+        >
+          <Button type="link" danger>
+            Eliminar
           </Button>
-          <Popconfirm
-            title="¿Estás seguro de eliminar?"
-            onConfirm={() => onDelete(record.id)}
-            okText="Sí"
-            cancelText="No"
-          >
-            <Button type="link" danger>
-              Eliminar
-            </Button>
-          </Popconfirm>
-        </>
-      ),
-    },
-  ];
+        </Popconfirm>
+      </>
+    ),
+  },
+];
 
-  return (
-    <div style={{ padding: 24 }}>
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
-        Nuevo Evaluador
-      </Button>
+// En el formulario solo pide 'specialization'
+<Modal
+  title={editingEvaluator ? "Editar Evaluador" : "Nuevo Evaluador"}
+  open={modalVisible}
+  onCancel={() => setModalVisible(false)}
+  onOk={() => form.submit()}
+  okText="Guardar"
+>
+  <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form.Item
+      name="specialization"
+      label="Especialidad"
+      rules={[{ required: true, message: "Por favor ingresa la especialidad" }]}
+    >
+      <Input />
+    </Form.Item>
+  </Form>
+</Modal>
 
-      <ErrorBoundary>
-        <Table
-          dataSource={evaluators}
-          columns={columns}
-          rowKey="id"
-          loading={loading}
-          pagination={{ pageSize: 4 }}
-        />
-      </ErrorBoundary>
-
-      <Modal
-        title={editingEvaluator ? "Editar Evaluador" : "Nuevo Evaluador"}
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Guardar"
-      >
-        <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            name="fullName"
-            label="Nombre completo"
-            rules={[{ required: true, message: "Por favor ingresa el nombre completo" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="specialization"
-            label="Especialidad"
-            rules={[{ required: true, message: "Por favor ingresa la especialidad" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="email"
-            label="Correo electrónico"
-            rules={[{ required: true, type: "email", message: "Por favor ingresa un correo válido" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            label="Contraseña"
-            rules={[{ required: true, message: "Por favor ingresa una contraseña" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
-  );
+  
 };
 
 export default EvaluatorsPage;

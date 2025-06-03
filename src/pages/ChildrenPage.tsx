@@ -120,22 +120,20 @@ const ChildrenPage: React.FC = () => {
   const columns = [
     
     // una columna para el id
+   
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-        render: (text: string, record: Children) => (
-    <a onClick={() => navigate(`/children/${record.id}`)} style={{ color: '#1677ff', cursor: 'pointer' }}>
+  title: "Nombre completo",
+  dataIndex: "fullName",
+  key: "fullName",
+  render: (text: string, record: Children) => (
+    <a
+      onClick={() => navigate(`/children/${record.id}`, { state: { child: record } })}
+      style={{ color: '#1677ff', cursor: 'pointer' }}
+    >
       {text}
     </a>
   ),
-    },
-    {
-      title: "Nombre completo",
-      dataIndex: "fullName",
-      key: "fullName",
-     
-    },
+},
     {
       title: "NUI",
       dataIndex: "nui",

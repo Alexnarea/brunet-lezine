@@ -20,10 +20,10 @@ const ChildDetail: React.FC = () => {
 
     const loadData = async () => {
       try {
-        const childData = await childrenService.getById(id);
+        const childData = await childrenService.getAll();
         const allEvaluations = await evaluationService.getAll();
         const childEvals = allEvaluations.filter(e => e.children_id.toString() === id);
-        setChild(childData);
+        setChild(childData.find(c => c.id.toString() === id) || null);
         setEvaluations(childEvals);
       } catch (error) {
         message.error('Error al cargar datos');
@@ -40,7 +40,8 @@ const ChildDetail: React.FC = () => {
   const birthDate = new Date(child.birthdate);
   const today = new Date();
   const age = Math.floor((today.getTime() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
-
+  //imprimir la edad en años
+    console.log(`Edad del niño: ${age} años`);
   const handleDelete = async () => {
     Modal.confirm({
       title: '¿Estás seguro que deseas eliminar este niño?',
