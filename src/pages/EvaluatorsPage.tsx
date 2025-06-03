@@ -72,64 +72,74 @@ const EvaluatorsPage: React.FC = () => {
   };
 
   const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Especialidad",
-    dataIndex: "specialization",
-    key: "specialization",
-  },
-  {
-    title: "Fecha de creación",
-    dataIndex: "creationDate",
-    key: "creationDate",
-  },
-  {
-    title: "Acciones",
-    key: "actions",
-    render: (_: any, record: Evaluator) => (
-      <>
-        <Button type="link" onClick={() => openModal(record)}>
-          Editar
-        </Button>
-        <Popconfirm
-          title="¿Estás seguro de eliminar?"
-          onConfirm={() => onDelete(record.id)}
-          okText="Sí"
-          cancelText="No"
-        >
-          <Button type="link" danger>
-            Eliminar
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Especialidad",
+      dataIndex: "specialization",
+      key: "specialization",
+    },
+    {
+      title: "Fecha de creación",
+      dataIndex: "creationDate",
+      key: "creationDate",
+    },
+    {
+      title: "Acciones",
+      key: "actions",
+      render: (_: any, record: Evaluator) => (
+        <>
+          <Button type="link" onClick={() => openModal(record)}>
+            Editar
           </Button>
-        </Popconfirm>
-      </>
-    ),
-  },
-];
+          <Popconfirm
+            title="¿Estás seguro de eliminar?"
+            onConfirm={() => onDelete(record.id)}
+            okText="Sí"
+            cancelText="No"
+          >
+            <Button type="link" danger>
+              Eliminar
+            </Button>
+          </Popconfirm>
+        </>
+      ),
+    },
+  ];
 
-// En el formulario solo pide 'specialization'
-<Modal
-  title={editingEvaluator ? "Editar Evaluador" : "Nuevo Evaluador"}
-  open={modalVisible}
-  onCancel={() => setModalVisible(false)}
-  onOk={() => form.submit()}
-  okText="Guardar"
->
-  <Form form={form} layout="vertical" onFinish={onFinish}>
-    <Form.Item
-      name="specialization"
-      label="Especialidad"
-      rules={[{ required: true, message: "Por favor ingresa la especialidad" }]}
-    >
-      <Input />
-    </Form.Item>
-  </Form>
-</Modal>
-
-  
+  return (
+    <div>
+      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
+        Nuevo Evaluador
+      </Button>
+      <Table
+        dataSource={evaluators}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+      />
+      <Modal
+        title={editingEvaluator ? "Editar Evaluador" : "Nuevo Evaluador"}
+        open={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onOk={() => form.submit()}
+        okText="Guardar"
+      >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            name="specialization"
+            label="Especialidad"
+            rules={[{ required: true, message: "Por favor ingresa la especialidad" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
+  );
 };
 
 export default EvaluatorsPage;
