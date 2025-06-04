@@ -1,23 +1,28 @@
-import axios from 'axios';
+// src/service/TestItemService.ts
+import axios from "axios";
+import type { TestItem, TestItemPayload } from "../models/TestItem";
 
-const API_BASE_URL = 'http://localhost:3000/api/test-items';
+const BASE_URL = "http://localhost:8082/api/test-items";
 
-export interface TestItem {
-    id: number;
-    question: string;
-    options: string[];
-    answer: string;
-    filledInfo?: any; // Puedes ajustar el tipo según la información que se llena
-}
+const testItemService = {
+  getAll: async (): Promise<TestItem[]> => {
+    const response = await axios.get(BASE_URL);
+    return response.data.data;
+  },
 
-// Obtener todos los ítems desde el backend
-export const fetchTestItems = async (): Promise<TestItem[]> => {
-    const response = await axios.get<TestItem[]>(API_BASE_URL);
-    return response.data;
+  create: async (payload: TestItemPayload): Promise<TestItem> => {
+    const response = await axios.post(BASE_URL, payload);
+    return response.data.data;
+  },
+
+  update: async (id: string, payload: TestItemPayload): Promise<TestItem> => {
+    const response = await axios.put(`${BASE_URL}/${id}`, payload);
+    return response.data.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await axios.delete(`${BASE_URL}/${id}`);
+  },
 };
 
-// Guardar la información llenada de un ítem
-export const saveTestItemInfo = async (itemId: number, filledInfo: any): Promise<void> => {
-    await axios.put(`${API_BASE_URL}/${itemId}`, { filledInfo });
-};
-        
+export default testItemService;

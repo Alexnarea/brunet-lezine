@@ -1,10 +1,10 @@
-export interface EvaluatorPayload {
+export interface Evaluator {
   id: number;
-  specialization: string;
-
+  speciality: string;
+  userId: number;
 }
 
-export interface Evaluator extends EvaluatorPayload {
-  id: number;
-  creationDate: string;
+export interface EvaluatorPayload {
+  speciality: string;
+  userId: number;
 }

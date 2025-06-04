@@ -15,23 +15,26 @@ const ChildDetail: React.FC = () => {
   const [child, setChild] = useState<Children | null>(null);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
 
-  useEffect(() => {
-    if (!id) return;
+useEffect(() => {
+  if (!id) return;
 
-    const loadData = async () => {
-      try {
-        const childData = await childrenService.getAll();
-        const allEvaluations = await evaluationService.getAll();
-        const childEvals = allEvaluations.filter(e => e.children_id.toString() === id);
-        setChild(childData.find(c => c.id.toString() === id) || null);
-        setEvaluations(childEvals);
-      } catch (error) {
-        message.error('Error al cargar datos');
-      }
-    };
+  const loadData = async () => {
+    try {
+      const childFound = await childrenService.getOne(id);
+      const allEvaluations = await evaluationService.getAll();
+      const childEvals = allEvaluations.filter(e => e.children_id === Number(id));
 
-    loadData();
-  }, [id]);
+      setChild(childFound);
+      setEvaluations(childEvals);
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      message.error('Cargando Datos.. ');
+      setChild(null);
+    }
+  };
+
+  loadData();
+}, [id]);
 
   if (!child) {
     return <div style={{ padding: 24 }}>Niño no encontrado</div>;
@@ -40,8 +43,7 @@ const ChildDetail: React.FC = () => {
   const birthDate = new Date(child.birthdate);
   const today = new Date();
   const age = Math.floor((today.getTime() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
-  //imprimir la edad en años
-    console.log(`Edad del niño: ${age} años`);
+
   const handleDelete = async () => {
     Modal.confirm({
       title: '¿Estás seguro que deseas eliminar este niño?',

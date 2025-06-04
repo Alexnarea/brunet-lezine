@@ -19,6 +19,7 @@ export interface EvaluationPayload {
 }
 
 export interface Evaluation extends EvaluationPayload {
+  created_at: string | number | Date;
     id: number;
   creationDate: string;
 }

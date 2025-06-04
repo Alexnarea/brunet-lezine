@@ -5,7 +5,7 @@ import { Table, Button, Input, message, Card, Select } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import childrenService from '../service/ChildrenService';
 import EvaluationsService from '../service/evaluationsService';
-import evaluatorsService from '../service/EvaluatorsService';
+import evaluatorsService from '../service/EvaluatorService';
 import type { EvaluationPayload } from '../models/Evaluation';
 import type { Children } from '../models/Children';
 import type { Evaluator } from '../models/Evaluator';

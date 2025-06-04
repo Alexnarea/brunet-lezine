@@ -1,10 +1,15 @@
-export interface TestItemPayload {
-  domain_id: number;
+// src/models/TestItem.ts
+export interface TestItem {
+  id: number;
+  domainId: number;
   description: string;
-  reference_age_months: number;
-  item_order: number;
+  referenceAgeMonths: number;
+  itemOrder: number;
 }
 
-export interface TestItem extends TestItemPayload {
-  id: number;
+export interface TestItemPayload {
+  domainId: number;
+  description: string;
+  referenceAgeMonths: number;
+  itemOrder: number;
 }

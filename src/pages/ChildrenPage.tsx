@@ -1,4 +1,3 @@
-// src/pages/ChildrenPage.tsx
 import React, { useEffect, useState, Component } from "react";
 import type { ReactNode } from "react";
 import {
@@ -15,11 +14,7 @@ import {
 import moment from "moment";
 import type { Children, ChildPayload } from "../models/Children";
 import childrenService from "../service/ChildrenService";
-import { useNavigate } from "react-router-dom";
-
-
-
-
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -46,11 +41,11 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 }
 
 const ChildrenPage: React.FC = () => {
-  const navigate = useNavigate();
   const [children, setChildren] = useState<Children[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingChild, setEditingChild] = useState<Children | null>(null);
+  const [searchText, setSearchText] = useState("");
   const [form] = Form.useForm();
 
   const loadChildren = async () => {
@@ -84,7 +79,6 @@ const ChildrenPage: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const payload: ChildPayload = {
-      id:values.id,
       fullName: values.fullName,
       nui: values.nui,
       birthdate: values.birthdate.format("YYYY-MM-DD"),
@@ -114,26 +108,24 @@ const ChildrenPage: React.FC = () => {
     } catch (error) {
       message.error("Error eliminando niño");
     }
-    
   };
 
+  // Filtrar por nombre o NUI
+  const filteredChildren = children.filter(
+    (child) =>
+      child.fullName.toLowerCase().includes(searchText.toLowerCase()) ||
+      child.nui.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const columns = [
-    
-    // una columna para el id
-   
     {
-  title: "Nombre completo",
-  dataIndex: "fullName",
-  key: "fullName",
-  render: (text: string, record: Children) => (
-    <a
-      onClick={() => navigate(`/children/${record.id}`, { state: { child: record } })}
-      style={{ color: '#1677ff', cursor: 'pointer' }}
-    >
-      {text}
-    </a>
-  ),
-},
+      title: "Nombre completo",
+      dataIndex: "fullName",
+      key: "fullName",
+      render: (text: string, record: Children) => (
+        <Link to={`/children/${record.id}`}>{text}</Link>
+      ),
+    },
     {
       title: "NUI",
       dataIndex: "nui",
@@ -175,13 +167,23 @@ const ChildrenPage: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
-        Nuevo Niño
-      </Button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+        <Button type="primary" onClick={() => openModal()}>
+          Nuevo Niño
+        </Button>
+
+        <Input.Search
+          placeholder="Buscar por nombre o NUI"
+          allowClear
+          style={{ width: 300 }}
+          onChange={(e) => setSearchText(e.target.value)}
+          value={searchText}
+        />
+      </div>
 
       <ErrorBoundary>
         <Table
-          dataSource={children}
+          dataSource={filteredChildren}
           columns={columns}
           rowKey="id"
           loading={loading}
