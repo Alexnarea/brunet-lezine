@@ -74,7 +74,7 @@ const EvaluacionPage: React.FC = () => {
         const evaluadores = await evaluatorsService.getAll();
         setEvaluators(evaluadores);
         if (evaluadores.length > 0) {
-          setSelectedEvaluator(evaluadores[0].fullName);
+          //setSelectedEvaluator(evaluadores[0].fullName);
         }
 
         
