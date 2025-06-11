@@ -6,51 +6,72 @@
   color: white;
 }
 
+/* Overlay mejorado */
 .carousel-slide .overlay {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 80px; /* AUMENTAMOS el padding */
+  background: rgba(0, 0, 0, 0.4); /* Negro con transparencia */
+  padding: 80px;
   border-radius: 15px;
-  width: 80%; /* Más ancho */
-  max-width: 1000px; /* Para que no se pase */
+  width: 80%;
+  max-width: 1000px;
 }
 
 .carousel-slide .overlay h1,
 .carousel-slide .overlay h2 {
-  font-size: 48px; /* MÁS GRANDE el título */
+  font-size: 48px;
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .carousel-slide .overlay p {
-  font-size: 24px; /* MÁS GRANDE el párrafo */
+  font-size: 24px;
   margin-bottom: 30px;
+  color: #fff;
 }
 
 .carousel-slide .overlay ul {
-  font-size: 22px; /* MÁS GRANDE la lista */
+  font-size: 22px;
   margin-bottom: 30px;
+  color: #fff;
 }
 
+/* Colores por slide */
 .carousel-slide.slide-1 {
-  background-image: url('https://images.unsplash.com/photo-1576671081837-bdc355e8e12e?auto=format&fit=crop&w=1600&q=80');
+  background-color: #E84A7C; /* Fucsia fuerte */
 }
 
 .carousel-slide.slide-2 {
-  background-image: url('https://images.unsplash.com/photo-1584466977773-ecf3d81ad32d?auto=format&fit=crop&w=1600&q=80');
+  background-color: #F6A8B9; /* Rosa suave */
 }
 
 .carousel-slide.slide-3 {
-  background-image: url('https://images.unsplash.com/photo-1573497019440-cf04218b5c9c?auto=format&fit=crop&w=1600&q=80');
+  background-color: #93E3E1; /* Celeste claro */
 }
 
+/* Botón primario */
+.ant-btn-primary {
+  background-color: #F6A8B9;
+  border-color: #F6A8B9;
+  color: #1F3D51;
+  font-weight: bold;
+}
+
+.ant-btn-primary:hover {
+  background-color: #E84A7C; /* Fucsia fuerte en hover */
+  border-color: #E84A7C;
+  color: white;
+}
+
+/* Flechas grandes */
 .custom-carousel .slick-arrow {
   z-index: 10;
 }
 
 .custom-carousel .slick-prev, .custom-carousel .slick-next {
-  font-size: 40px !important; /* FLECHAS más grandes */
+  font-size: 40px !important;
+  color: white !important; 
 }
