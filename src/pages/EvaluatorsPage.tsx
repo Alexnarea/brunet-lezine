@@ -59,6 +59,11 @@ const EvaluatorsPage: React.FC = () => {
   const onFinish = async (values: any) => {
     const payload: EvaluatorPayload = {
       speciality: values.speciality,
+      fullName: values.fullName,
+      nui: values.nui,
+      phone: values.phone,
+      birthdate: values.birthdate,
+      gender: values.gender,
       userId: Number(values.userId),
     };
 
@@ -92,6 +97,31 @@ const EvaluatorsPage: React.FC = () => {
       title: "Especialidad",
       dataIndex: "speciality",
       key: "speciality",
+    },
+    {
+      title: "Nombre completo",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "NUI",
+      dataIndex: "nui",
+      key: "nui",
+    },
+    {
+      title: "Teléfono",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Fecha de nacimiento",
+      dataIndex: "birthdate",
+      key: "birthdate",
+    },
+    {
+      title: "Género",
+      dataIndex: "gender",
+      key: "gender",
     },
     {
       title: "ID Usuario",
@@ -130,7 +160,11 @@ const EvaluatorsPage: React.FC = () => {
         allowClear
       />
 
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16, marginLeft: 8 }}>
+      <Button
+        type="primary"
+        onClick={() => openModal()}
+        style={{ marginBottom: 16, marginLeft: 8 }}
+      >
         Nuevo Evaluador
       </Button>
 
@@ -157,6 +191,47 @@ const EvaluatorsPage: React.FC = () => {
           >
             <Input />
           </Form.Item>
+
+          <Form.Item
+            name="fullName"
+            label="Nombre completo"
+            rules={[{ required: true, message: "Por favor ingresa el nombre completo" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="nui"
+            label="NUI"
+            rules={[{ required: true, message: "Por favor ingresa el NUI" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="phone"
+            label="Teléfono"
+            rules={[{ required: true, message: "Por favor ingresa el teléfono" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="birthdate"
+            label="Fecha de nacimiento"
+            rules={[{ required: true, message: "Por favor ingresa la fecha de nacimiento" }]}
+          >
+            <Input type="date" />
+          </Form.Item>
+
+          <Form.Item
+            name="gender"
+            label="Género"
+            rules={[{ required: true, message: "Por favor ingresa el género" }]}
+          >
+            <Input />
+          </Form.Item>
+
           <Form.Item
             name="userId"
             label="ID de Usuario"

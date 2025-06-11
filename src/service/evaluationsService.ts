@@ -3,7 +3,7 @@ import type { Evaluation, EvaluationPayload } from "../models/Evaluation";
 
 const BASE_URL = "http://682e7f8a746f8ca4a47d3608.mockapi.io/children/evaluations";
 
-const EvaluationService = {
+const EvaluationsService = {
   getAll: async (): Promise<Evaluation[]> => {
     const response = await axios.get(BASE_URL);
     return response.data;
@@ -24,4 +24,4 @@ const EvaluationService = {
   },
 };
 
-export default EvaluationService;
+export default EvaluationsService;
