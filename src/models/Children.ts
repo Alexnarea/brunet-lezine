@@ -9,5 +9,5 @@ export interface ChildPayload {
 export interface Children extends ChildPayload {
   name: any;
   id: number;
-  creationDate: string;
+  creationDate?: string;
 }

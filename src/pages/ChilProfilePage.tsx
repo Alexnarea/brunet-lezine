@@ -10,7 +10,8 @@ import type { Evaluation } from '../models/Evaluation';
 const { Title, Text } = Typography;
 
 const ChildDetail: React.FC = () => {
-  const { id } = useParams();
+  //const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [child, setChild] = useState<Children | null>(null);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
@@ -181,6 +182,9 @@ const ChildDetail: React.FC = () => {
                         fontSize: 12,
                         fontWeight: 'bold'
                       }}>
+                        AC: {evaluation.chronological_age} años;
+                        AD: {evaluation.edadDesarrollo} años;
+                        Dx: {evaluation.classification}
                         CD: {evaluation.coeficiente}
                       </Text>
                     </Col>

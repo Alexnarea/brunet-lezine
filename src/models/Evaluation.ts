@@ -16,6 +16,7 @@ export interface EvaluationPayload {
   observaciones: string;
   edadDesarrollo: number;
   coeficiente: number;
+  classification: string;
 }
 
 export interface Evaluation extends EvaluationPayload {

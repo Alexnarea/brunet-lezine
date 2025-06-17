@@ -13,7 +13,8 @@ import type {
 import type {
   Evaluator,
   EvaluatorPayload,
-} from "../models/Evaluator";
+}
+   from "../models/Evaluator";
 import type {
   Evaluation,
   EvaluationPayload,
@@ -88,6 +89,7 @@ const EvaluacionPage: React.FC = () => {
   const [observaciones, setObservaciones] = useState<string>("");
   const [edadDesarrollo, setEdadDesarrollo] = useState<number>(0);
   const [coeficiente, setCoeficiente] = useState<number>(0); 
+  const [classification, setClasification] = useState<string>("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -155,16 +157,16 @@ useEffect(() => {
   const loadData = async () => {
     if (!childId) return;
     try {
-      // Suponiendo que tu backend retorna estos valores
+
       const evaluacion = (await EvaluationsService.getAll())[0];
       if (evaluacion) {
         setEdadReal(Number(evaluacion.chronological_age)); 
         setEdadDesarrollo(Number(evaluacion.edadDesarrollo));
         setCoeficiente(Number(evaluacion.coeficiente));
-        // ...otros datos...
-      }
-      // ...resto de la carga...
-    } catch (error) {
+        setClasification(evaluacion.clasification || "");
+
+    }
+   } catch (error) {
       message.error("Error cargando datos");
     }
   };
@@ -273,6 +275,7 @@ useEffect(() => {
       <p>Edad real: {edadReal} años</p>
       <p>Edad de desarrollo: {edadDesarrollo}</p>
       <p>Coeficiente: {coeficiente}%</p>
+      <p>Clasificación: {clasification}</p>
 
       <div style={{ marginBottom: 12 }}>
         <label>
