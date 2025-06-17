@@ -70,7 +70,7 @@ const App = () => {
       
 
       <Footer style={{ textAlign: "center" }}>
-        Brunet-Lézine ©2025 - Proyecto Escuela
+        Brunet-Lézine 2025 - Mi primer Crayon
       </Footer>
     </Layout>
   );

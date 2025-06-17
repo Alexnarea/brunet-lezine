@@ -13,7 +13,8 @@ import type {
 import type {
   Evaluator,
   EvaluatorPayload,
-} from "../models/Evaluator";
+}
+   from "../models/Evaluator";
 import type {
   Evaluation,
   EvaluationPayload,
@@ -75,7 +76,7 @@ const testItemsByAge: Record<
       completed: false,
     },
   ],
-  // Agrega más edades y tareas según necesidad...
+ 
 };
 
 const EvaluacionPage: React.FC = () => {
@@ -86,6 +87,9 @@ const EvaluacionPage: React.FC = () => {
   const [selectedEvaluator, setSelectedEvaluator] = useState<string>("");
   const [evaluators, setEvaluators] = useState<Evaluator[]>([]);
   const [observaciones, setObservaciones] = useState<string>("");
+  const [edadDesarrollo, setEdadDesarrollo] = useState<number>(0);
+  const [coeficiente, setCoeficiente] = useState<number>(0); 
+  const [classification, setClasification] = useState<string>("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -102,13 +106,13 @@ const EvaluacionPage: React.FC = () => {
         setChild(niño);
 
         // Calcular edad real en años (aproximado)
-        const birthDate = new Date(niño.birthdate);
+       /*const birthDate = new Date(niño.birthdate);
         const today = new Date();
         const edad = Math.floor(
           (today.getTime() - birthDate.getTime()) /
             (365.25 * 24 * 60 * 60 * 1000)
         );
-        setEdadReal(edad);
+        setEdadReal(edad); */
 
         // Cargar evaluadores
         const evaluadores = await evaluatorService.getAll();
@@ -118,7 +122,7 @@ const EvaluacionPage: React.FC = () => {
         }
 
         // Obtener tareas según edad, o vacío si no hay
-        const tareasEdad = testItemsByAge[edad] || [];
+        const tareasEdad = testItemsByAge[edadReal] || [];
 
         // Asegurar que reinforcement y completed estén inicializados
         const allItemsWithReinforcement = tareasEdad.map(
@@ -149,19 +153,36 @@ const EvaluacionPage: React.FC = () => {
     );
   };
 
-  // Cambiar refuerzo
-  const handleReinforcementChange = (
-    id: string,
-    value: string
-  ) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, reinforcement: value } : item
-      )
-    );
-  };
+useEffect(() => {
+  const loadData = async () => {
+    if (!childId) return;
+    try {
 
-  // Calcular edad de desarrollo y coeficiente
+      const evaluacion = (await EvaluationsService.getAll())[0];
+      if (evaluacion) {
+        setEdadReal(Number(evaluacion.chronological_age)); 
+        setEdadDesarrollo(Number(evaluacion.edadDesarrollo));
+        setCoeficiente(Number(evaluacion.coeficiente));
+        setClasification(evaluacion.classification || "");
+
+    }
+   } catch (error) {
+      message.error("Error cargando datos");
+    }
+  };
+  loadData();
+}, [childId]);
+
+// ...en el render...
+
+  // Calcular edad de desarrollo y coeficiente esto viene desde el backend
+  /* const edadReal = child
+
+    ? Math.floor(
+        (new Date().getTime() - new Date(child.birthdate).getTime()) /
+          (365.25 * 24 * 60 * 60 * 1000)
+      )
+    : 0;
   const edadDesarrollo = Math.round(
     (items.filter((i) => i.completed).length / items.length) *
       edadReal
@@ -170,6 +191,8 @@ const EvaluacionPage: React.FC = () => {
     edadReal > 0
       ? Math.round((edadDesarrollo / edadReal) * 100)
       : 0;
+
+      */
 
   // Guardar evaluación
   const handleGuardar = async () => {
@@ -194,6 +217,7 @@ const EvaluacionPage: React.FC = () => {
       observaciones,
       edadDesarrollo,
       coeficiente,
+      classification,
     };
 
     try {
@@ -227,7 +251,7 @@ const EvaluacionPage: React.FC = () => {
         />
       ),
     },
-    {
+    /*{
       title: "Refuerzo",
       key: "reinforcement",
       render: (_, record) => (
@@ -240,6 +264,7 @@ const EvaluacionPage: React.FC = () => {
         />
       ),
     },
+    */
   ];
 
   return (
@@ -249,6 +274,9 @@ const EvaluacionPage: React.FC = () => {
       </Title>
 
       <p>Edad real: {edadReal} años</p>
+      <p>Edad de desarrollo: {edadDesarrollo}</p>
+      <p>Coeficiente: {coeficiente}%</p>
+      <p>Clasificación: {classification}</p>
 
       <div style={{ marginBottom: 12 }}>
         <label>
@@ -286,8 +314,7 @@ const EvaluacionPage: React.FC = () => {
         />
       </div>
 
-      <p>Edad de desarrollo: {edadDesarrollo}</p>
-      <p>Coeficiente: {coeficiente}%</p>
+      
 
       <Button type="primary" onClick={handleGuardar}>
         Guardar Evaluación
