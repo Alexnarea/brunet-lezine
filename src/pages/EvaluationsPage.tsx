@@ -163,7 +163,7 @@ useEffect(() => {
         setEdadReal(Number(evaluacion.chronological_age)); 
         setEdadDesarrollo(Number(evaluacion.edadDesarrollo));
         setCoeficiente(Number(evaluacion.coeficiente));
-        setClasification(evaluacion.clasification || "");
+        setClasification(evaluacion.classification || "");
 
     }
    } catch (error) {
@@ -217,6 +217,7 @@ useEffect(() => {
       observaciones,
       edadDesarrollo,
       coeficiente,
+      classification,
     };
 
     try {
@@ -275,7 +276,7 @@ useEffect(() => {
       <p>Edad real: {edadReal} años</p>
       <p>Edad de desarrollo: {edadDesarrollo}</p>
       <p>Coeficiente: {coeficiente}%</p>
-      <p>Clasificación: {clasification}</p>
+      <p>Clasificación: {classification}</p>
 
       <div style={{ marginBottom: 12 }}>
         <label>
