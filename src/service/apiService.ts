@@ -1,9 +1,16 @@
-import axios from "axios";
+import axios from 'axios';
+import AuthService from './authService';
 
 const api = axios.create({
-  baseURL: "http://682e7f8a746f8ca4a47d3608.mockapi.io/children", // URL directamente aquí
-  //baseURL: import.meta.env.VITE_API_URL,
-  headers: { "Content-Type": "application/json" },
+  baseURL: 'http://localhost:8082/api', // tu backend
+});
+
+api.interceptors.request.use((config) => {
+  const token = AuthService.getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export default api;

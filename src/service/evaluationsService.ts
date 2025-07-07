@@ -1,27 +1,45 @@
-import axios from "axios";
-import type { Evaluation, EvaluationPayload } from "../models/Evaluation";
+//import axios from "axios";
+import api from "./apiService";
 
-const BASE_URL = "http://682e7f8a746f8ca4a47d3608.mockapi.io/children/evaluations";
+// src/service/evaluationsService.ts
+import type {
+  Evaluation,
+  EvaluationRequest,
+  EvaluationResult,
+  EvaluationDetail
+} from "../models/Evaluation";
+
+const BASE_URL = "http://localhost:8082/api/evaluations";
 
 const EvaluationsService = {
   getAll: async (): Promise<Evaluation[]> => {
-    const response = await axios.get(BASE_URL);
+    const response = await api.get(BASE_URL);
     return response.data;
   },
 
-  create: async (payload: EvaluationPayload): Promise<Evaluation> => {
-    const response = await axios.post(BASE_URL, payload);
+  getOne: async (id: number | string): Promise<Evaluation> => {
+    const response = await api.get(`${BASE_URL}/${id}`);
     return response.data;
   },
 
-  update: async (id: number | string, payload: EvaluationPayload): Promise<Evaluation> => {
-    const response = await axios.put(`${BASE_URL}/${id}`, payload);
+  getDetail: async (id: number | string): Promise<EvaluationDetail> => {
+    const response = await api.get(`${BASE_URL}/${id}/detail`);
+    return response.data;
+  },
+
+  createWithResponses: async (data: EvaluationRequest): Promise<EvaluationResult> => {
+    const response = await api.post(`${BASE_URL}/create-with-responses`, data);
+    return response.data;
+  },
+
+  update: async (id: number | string, payload: EvaluationRequest): Promise<Evaluation> => {
+    const response = await api.put(`${BASE_URL}/${id}`, payload);
     return response.data;
   },
 
   delete: async (id: number | string): Promise<void> => {
-    await axios.delete(`${BASE_URL}/${id}`);
-  },
+    await api.delete(`${BASE_URL}/${id}`);
+  }
 };
 
 export default EvaluationsService;

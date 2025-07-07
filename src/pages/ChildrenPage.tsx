@@ -110,7 +110,6 @@ const ChildrenPage: React.FC = () => {
     }
   };
 
-  // Filtrar por nombre o NUI
   const filteredChildren = children.filter(
     (child) =>
       child.fullName.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -151,7 +150,7 @@ const ChildrenPage: React.FC = () => {
             Editar
           </Button>
           <Popconfirm
-            title="¿Estás seguro de eliminar?"
+            title="¿Estás seguro que deseas eliminar?"
             onConfirm={() => onDelete(record.id)}
             okText="Sí"
             cancelText="No"
@@ -223,7 +222,11 @@ const ChildrenPage: React.FC = () => {
             <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item name="gender" label="Género">
+          <Form.Item
+            name="gender"
+            label="Género"
+            rules={[{ required: true, message: "Por favor selecciona un género" }]}
+          >
             <Select allowClear placeholder="Selecciona un género">
               <Option value="Masculino">Masculino</Option>
               <Option value="Femenino">Femenino</Option>

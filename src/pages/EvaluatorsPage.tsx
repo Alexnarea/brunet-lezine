@@ -7,13 +7,21 @@ import {
   Input,
   message,
   Popconfirm,
+  Select,
 } from "antd";
 import type { Evaluator, EvaluatorPayload } from "../models/Evaluator";
+import type { User } from "../models/User";
 import evaluatorService from "../service/EvaluatorService";
+import moment from "moment";
+import UsersService from "../service/UsersService";
+
+const { Option } = Select;
 
 const EvaluatorsPage: React.FC = () => {
   const [evaluators, setEvaluators] = useState<Evaluator[]>([]);
   const [filteredEvaluators, setFilteredEvaluators] = useState<Evaluator[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
+  const [allUsersMap, setAllUsersMap] = useState<Map<number, string>>(new Map());
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingEvaluator, setEditingEvaluator] = useState<Evaluator | null>(null);
@@ -33,26 +41,50 @@ const EvaluatorsPage: React.FC = () => {
     }
   };
 
+  const loadAllUsers = async () => {
+    try {
+      const data = await UsersService.getAll(); 
+      const map = new Map<number, string>();
+      data.forEach((u: User) => map.set(u.id, u.username));  // ✅ Cambiado a username
+      setAllUsersMap(map);
+    } catch {
+      message.error("Error cargando usuarios");
+    }
+  };
+
+  const loadAvailableUsers = async () => {
+    try {
+      const data = await UsersService.getAvailableForEvaluator(); 
+      setAvailableUsers(data);
+    } catch {
+      message.error("Error cargando usuarios disponibles");
+    }
+  };
+
   useEffect(() => {
     loadEvaluators();
+    loadAllUsers();
   }, []);
 
   useEffect(() => {
     const filtered = evaluators.filter(
       (e) =>
-        e.speciality.toLowerCase().includes(searchText.toLowerCase()) ||
-        e.userId.toString().includes(searchText)
+        e.speciality?.toLowerCase().includes(searchText.toLowerCase()) ||
+        allUsersMap.get(e.userId || 0)?.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredEvaluators(filtered);
-  }, [searchText, evaluators]);
+  }, [searchText, evaluators, allUsersMap]);
 
   const openModal = (evaluator?: Evaluator) => {
     setEditingEvaluator(evaluator || null);
+    form.resetFields();
     if (evaluator) {
-      form.setFieldsValue(evaluator);
-    } else {
-      form.resetFields();
+      form.setFieldsValue({
+        ...evaluator,
+        birthdate: evaluator.birthdate?.slice(0, 10),
+      });
     }
+    loadAvailableUsers();
     setModalVisible(true);
   };
 
@@ -117,6 +149,8 @@ const EvaluatorsPage: React.FC = () => {
       title: "Fecha de nacimiento",
       dataIndex: "birthdate",
       key: "birthdate",
+      render: (date: string) =>
+        date ? moment(date).format("DD/MM/YYYY") : "-",
     },
     {
       title: "Género",
@@ -124,9 +158,10 @@ const EvaluatorsPage: React.FC = () => {
       key: "gender",
     },
     {
-      title: "ID Usuario",
+      title: "Usuario",
       dataIndex: "userId",
       key: "userId",
+      render: (userId: number) => allUsersMap.get(userId) || "-"
     },
     {
       title: "Acciones",
@@ -154,7 +189,7 @@ const EvaluatorsPage: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <Input.Search
-        placeholder="Buscar por especialidad o ID de usuario"
+        placeholder="Buscar por especialidad o usuario"
         onChange={(e) => setSearchText(e.target.value)}
         style={{ width: 300, marginBottom: 16 }}
         allowClear
@@ -227,17 +262,27 @@ const EvaluatorsPage: React.FC = () => {
           <Form.Item
             name="gender"
             label="Género"
-            rules={[{ required: true, message: "Por favor ingresa el género" }]}
+            rules={[{ required: true, message: "Por favor selecciona el género" }]}
           >
-            <Input />
+            <Select placeholder="Selecciona el género">
+              <Option value="Masculino">Masculino</Option>
+              <Option value="Femenino">Femenino</Option>
+              <Option value="Otro">Otro</Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
             name="userId"
-            label="ID de Usuario"
-            rules={[{ required: true, message: "Por favor ingresa el ID del usuario" }]}
+            label="Usuario"
+            rules={[{ required: true, message: "Por favor selecciona el usuario" }]}
           >
-            <Input type="number" />
+            <Select placeholder="Selecciona un usuario">
+              {availableUsers.map((user) => (
+                <Option key={user.id} value={user.id}>
+                  {user.username}  {/* ✅ Cambiado a username */}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
