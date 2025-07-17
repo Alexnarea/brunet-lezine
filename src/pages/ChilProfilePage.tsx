@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Card, Button, Typography, Row, Col, Modal, message, Select, Form, Input, DatePicker, Tag, Space
 } from 'antd';
-import { ArrowLeft, Baby, CalendarCheck, CircleUserRound, FileEdit, LineChart, FilePlus2, Filter, Star, Award } from 'lucide-react';
+import { ArrowLeft, Baby, CalendarCheck, CircleUserRound, FileEdit, LineChart, FilePlus2, Filter, Award } from 'lucide-react';
 import moment from 'moment';
 
 import childrenService from '../service/ChildrenService';
