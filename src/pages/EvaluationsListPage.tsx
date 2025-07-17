@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import { Table, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import type { ColumnsType } from "antd/es/table";
@@ -71,3 +71,4 @@ const EvaluationsListPage: React.FC = () => {
 };
 
 export default EvaluationsListPage;
+*/

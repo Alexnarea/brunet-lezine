@@ -15,10 +15,14 @@ import moment from "moment";
 import type { Children, ChildPayload } from "../models/Children";
 import childrenService from "../service/ChildrenService";
 import { Link } from "react-router-dom";
+import { Eye, Pencil, Trash2, Plus, Heart, User } from "lucide-react";
 
 const { Option } = Select;
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
   constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false };
@@ -34,7 +38,11 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 
   render() {
     if (this.state.hasError) {
-      return <div style={{ padding: 20, color: "red" }}>Ocurrió un error al mostrar la tabla.</div>;
+      return (
+        <div style={{ padding: 20, color: "red" }}>
+          Ocurrió un error al mostrar la tabla.
+        </div>
+      );
     }
     return this.props.children;
   }
@@ -118,7 +126,7 @@ const ChildrenPage: React.FC = () => {
 
   const columns = [
     {
-      title: "Nombre completo",
+      title: "Nombre Completo",
       dataIndex: "fullName",
       key: "fullName",
       render: (text: string, record: Children) => (
@@ -131,33 +139,69 @@ const ChildrenPage: React.FC = () => {
       key: "nui",
     },
     {
-      title: "Fecha de nacimiento",
+      title: "Fecha de Nacimiento",
       dataIndex: "birthdate",
       key: "birthdate",
-      render: (date: string) => (date ? moment(date).format("DD/MM/YYYY") : "-"),
+      render: (date: string) =>
+        date ? moment(date).format("DD/MM/YYYY") : "-",
+    },
+    {
+      title: "Edad",
+      key: "age",
+      render: (_: any, record: Children) => {
+        const birthdate = moment(record.birthdate);
+        const today = moment();
+        const age = today.diff(birthdate, "years");
+        return `${age} años`;
+      },
     },
     {
       title: "Género",
       dataIndex: "gender",
       key: "gender",
+      render: (gender: string) => (
+        <span
+          style={{
+            padding: "2px 8px",
+            borderRadius: 12,
+            color: gender === "Femenino" ? "#eb2f96" : "#1890ff",
+            backgroundColor:
+              gender === "Femenino" ? "#fff0f6" : "#e6f7ff",
+            fontWeight: 500,
+            fontSize: 12,
+          }}
+        >
+          {gender}
+        </span>
+      ),
     },
     {
       title: "Acciones",
       key: "actions",
       render: (_: any, record: Children) => (
         <>
-          <Button type="link" onClick={() => openModal(record)}>
-            Editar
-          </Button>
+          <Link to={`/children/${record.id}`}>
+            <Eye size={18} style={{ color: "#52c41a", marginRight: 8 }} />
+          </Link>
+          <Pencil
+            size={18}
+            onClick={() => openModal(record)}
+            style={{
+              color: "#1890ff",
+              marginRight: 8,
+              cursor: "pointer",
+            }}
+          />
           <Popconfirm
             title="¿Estás seguro que deseas eliminar?"
             onConfirm={() => onDelete(record.id)}
             okText="Sí"
             cancelText="No"
           >
-            <Button type="link" danger>
-              Eliminar
-            </Button>
+            <Trash2
+              size={18}
+              style={{ color: "#ff4d4f", cursor: "pointer" }}
+            />
           </Popconfirm>
         </>
       ),
@@ -166,11 +210,53 @@ const ChildrenPage: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
-        <Button type="primary" onClick={() => openModal()}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ background: "#ff4d91", padding: 8, borderRadius: 12 }}>
+            <Heart size={20} color="#fff" />
+          </div>
+          <div>
+            <h2 style={{ margin: 0 }}>Gestión de Niños</h2>
+            <p style={{ margin: 0 }}>Administra la información de los niños registrados</p>
+          </div>
+        </div>
+        <Button
+          type="primary"
+          icon={<Plus size={16} />}
+          onClick={() => openModal()}
+        >
           Nuevo Niño
         </Button>
+      </div>
 
+      <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
+          <p style={{ margin: 0, fontSize: 12 }}>Total de Niños</p>
+          <p style={{ margin: 0, color: "#1677ff" }}>
+            <User size={18} style={{ marginRight: 4 }} />{children.length}
+          </p>
+        </div>
+        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
+          <p style={{ margin: 0, fontSize: 12 }}>Niños</p>
+          <p style={{ margin: 0, color: "#1677ff" }}>
+            <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Masculino").length}
+          </p>
+        </div>
+        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
+          <p style={{ margin: 0, fontSize: 12 }}>Niñas</p>
+          <p style={{ margin: 0, color: "#eb2f96" }}>
+            <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Femenino").length}
+          </p>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
         <Input.Search
           placeholder="Buscar por nombre o NUI"
           allowClear
@@ -186,7 +272,7 @@ const ChildrenPage: React.FC = () => {
           columns={columns}
           rowKey="id"
           loading={loading}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 10 }}
         />
       </ErrorBoundary>
 
@@ -201,7 +287,12 @@ const ChildrenPage: React.FC = () => {
           <Form.Item
             name="fullName"
             label="Nombre completo"
-            rules={[{ required: true, message: "Por favor ingresa el nombre completo" }]}
+            rules={[
+              {
+                required: true,
+                message: "Por favor ingresa el nombre completo",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -217,7 +308,12 @@ const ChildrenPage: React.FC = () => {
           <Form.Item
             name="birthdate"
             label="Fecha de nacimiento"
-            rules={[{ required: true, message: "Por favor ingresa la fecha de nacimiento" }]}
+            rules={[
+              {
+                required: true,
+                message: "Por favor ingresa la fecha de nacimiento",
+              },
+            ]}
           >
             <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
           </Form.Item>

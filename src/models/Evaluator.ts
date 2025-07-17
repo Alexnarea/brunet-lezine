@@ -20,6 +20,7 @@ export interface EvaluatorPayload {
 }
 
 export interface User {
+  username(id: number, username: any): void;
   id: number;
   name: string; // username del usuario
 }

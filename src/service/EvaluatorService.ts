@@ -1,8 +1,7 @@
 import api from "./apiService";
 import type { Evaluator, EvaluatorPayload } from "../models/Evaluator";
-import type { User } from "../models/User";
 
-const BASE_URL = "http://localhost:8082/evaluators";
+const BASE_URL = "http://localhost:8082/api/evaluators";
 
 const evaluatorService = {
   getAll: async (): Promise<Evaluator[]> => {

@@ -1,13 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Input, Switch, message, Popconfirm } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Switch,
+  message,
+  Popconfirm,
+  Select,
+  Card,
+  Row,
+  Col,
+  Typography,
+} from "antd";
+import {
+  Pencil,
+  Trash2,
+  PlusCircle,
+  User,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import usersService from "../service/UsersService";
-import type { User, UserPayload } from "../models/User";
+import type { User as UserModel, UserPayload } from "../models/User";
+
+const { Option } = Select;
+const { Title, Text } = Typography;
 
 const UsersPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<UserModel | null>(null);
   const [form] = Form.useForm();
 
   const loadUsers = async () => {
@@ -26,7 +51,7 @@ const UsersPage: React.FC = () => {
     loadUsers();
   }, []);
 
-  const openModal = (user?: User) => {
+  const openModal = (user?: UserModel) => {
     setEditingUser(user || null);
     if (user) {
       form.setFieldsValue({
@@ -34,7 +59,8 @@ const UsersPage: React.FC = () => {
         email: user.email,
         locked: user.locked,
         disabled: user.disabled,
-        password: "", // nunca muestras la contraseña real
+        role: user.role,
+        password: "",
       });
     } else {
       form.resetFields();
@@ -44,16 +70,16 @@ const UsersPage: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const payload: UserPayload = {
-      username: values.username,
-      email: values.email,
-      password: values.password, // para crear o cambiar contraseña
-      locked: values.locked,
-      disabled: values.disabled,
+      username: values.username?.trim(),
+      email: values.email?.trim(),
+      password: values.password,
+      locked: values.locked ?? false,
+      disabled: values.disabled ?? false,
+      role: values.role,
     };
 
     try {
       if (editingUser) {
-        // Para actualizar, normalmente no mandas password si no quieres cambiarla
         if (!payload.password) delete payload.password;
         await usersService.update(editingUser.id.toString(), payload);
         message.success("Usuario actualizado");
@@ -63,8 +89,9 @@ const UsersPage: React.FC = () => {
       }
       setModalVisible(false);
       loadUsers();
-    } catch {
-      message.error("Error guardando usuario");
+    } catch (err: any) {
+      const errorMsg = err?.response?.data?.message || "Error guardando usuario";
+      message.error(errorMsg);
     }
   };
 
@@ -78,46 +105,53 @@ const UsersPage: React.FC = () => {
     }
   };
 
+  const filteredUsers = users.filter((u) => u.role !== "ADMIN");
+  const total = users.length;
+  const activos = users.filter((u) => !u.disabled).length;
+  const inactivos = total - activos;
+
   const columns = [
     {
       title: "Usuario",
       dataIndex: "username",
-      key: "username",
     },
     {
-      title: "Email",
+      title: "Correo",
       dataIndex: "email",
-      key: "email",
+    },
+    {
+      title: "Rol",
+      dataIndex: "role",
+      render: (role: string) => (
+        <Text type={role === "ADMIN" ? "warning" : "secondary"}>{role}</Text>
+      ),
     },
     {
       title: "Bloqueado",
       dataIndex: "locked",
-      key: "locked",
-      render: (locked: boolean) => (locked ? "Sí" : "No"),
+      render: (locked: boolean) =>
+        locked ? <Text type="danger">Sí</Text> : "No",
     },
     {
       title: "Deshabilitado",
       dataIndex: "disabled",
-      key: "disabled",
-      render: (disabled: boolean) => (disabled ? "Sí" : "No"),
+      render: (disabled: boolean) =>
+        disabled ? <Text type="danger">Sí</Text> : "No",
     },
     {
       title: "Acciones",
-      key: "actions",
-      render: (_: any, record: User) => (
+      render: (_: any, record: UserModel) => (
         <>
-          <Button type="link" onClick={() => openModal(record)}>
-            Editar
-          </Button>
+          <Button
+            type="text"
+            icon={<Pencil size={18} color="#1890ff" />}
+            onClick={() => openModal(record)}
+          />
           <Popconfirm
-            title="¿Seguro que quieres eliminar este usuario?"
+            title="¿Eliminar usuario?"
             onConfirm={() => onDelete(record.id)}
-            okText="Sí"
-            cancelText="No"
           >
-            <Button type="link" danger>
-              Eliminar
-            </Button>
+            <Button type="text" danger icon={<Trash2 size={18} />} />
           </Popconfirm>
         </>
       ),
@@ -126,11 +160,57 @@ const UsersPage: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
+      <Title level={3}>
+        <User color="#eb2f96" style={{ marginRight: 8 }} />
+        Gestión de Usuarios
+      </Title>
+
+      <Row gutter={16} style={{ marginBottom: 24 }}>
+        <Col span={8}>
+          <Card>
+            <User size={24} color="#1890ff" />
+            <br />
+            <Text strong>Total de Usuarios</Text>
+            <br />
+            <Text>{total}</Text>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card>
+            <CheckCircle size={24} color="#52c41a" />
+            <br />
+            <Text strong>Activos</Text>
+            <br />
+            <Text>{activos}</Text>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card>
+            <XCircle size={24} color="#ff4d4f" />
+            <br />
+            <Text strong>Inactivos</Text>
+            <br />
+            <Text>{inactivos}</Text>
+          </Card>
+        </Col>
+      </Row>
+
+      <Button
+        type="primary"
+        icon={<PlusCircle size={18} />}
+        onClick={() => openModal()}
+        style={{ marginBottom: 16 }}
+      >
         Nuevo Usuario
       </Button>
 
-      <Table dataSource={users} columns={columns} rowKey="id" loading={loading} pagination={{ pageSize: 5 }} />
+      <Table
+        dataSource={filteredUsers}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+        pagination={{ pageSize: 5 }}
+      />
 
       <Modal
         title={editingUser ? "Editar Usuario" : "Nuevo Usuario"}
@@ -151,7 +231,7 @@ const UsersPage: React.FC = () => {
           <Form.Item
             name="email"
             label="Correo electrónico"
-            rules={[{ required: true, type: "email", message: "Por favor ingresa un correo válido" }]}
+            rules={[{ required: true, type: "email", message: "Ingresa un correo válido" }]}
           >
             <Input />
           </Form.Item>
@@ -159,9 +239,24 @@ const UsersPage: React.FC = () => {
           <Form.Item
             name="password"
             label="Contraseña"
-            rules={editingUser ? [] : [{ required: true, message: "Por favor ingresa la contraseña" }]}
+            rules={
+              editingUser
+                ? []
+                : [{ required: true, message: "Ingresa la contraseña" }]
+            }
           >
             <Input.Password placeholder={editingUser ? "Deja en blanco para no cambiar" : ""} />
+          </Form.Item>
+
+          <Form.Item
+            name="role"
+            label="Rol"
+            rules={[{ required: true, message: "Selecciona un rol" }]}
+          >
+            <Select placeholder="Selecciona un rol">
+              <Option value="ADMIN">ADMIN</Option>
+              <Option value="EVALUATOR">EVALUATOR</Option>
+            </Select>
           </Form.Item>
 
           <Form.Item name="locked" label="Bloqueado" valuePropName="checked">

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Row, Col, Button, Typography, Statistic } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
-  UserOutlined, SmileOutlined, TeamOutlined, BarChartOutlined,
-  FileTextOutlined, LineChartOutlined, HeartOutlined
+  UserOutlined, SmileOutlined, TeamOutlined, HeartOutlined
 } from '@ant-design/icons';
 import { getCurrentUserFromToken } from '../utils/jwtHelper';
 
@@ -11,24 +10,38 @@ const { Title, Text } = Typography;
 
 const summaryData = [
   { title: 'Niños Registrados', value: 1247, icon: <HeartOutlined />, color: '#1890ff' },
-  { title: 'Evaluaciones Completadas', value: 3891, icon: <BarChartOutlined />, color: '#52c41a' },
   { title: 'Evaluadores Activos', value: 28, icon: <TeamOutlined />, color: '#722ed1' },
-  { title: 'Reportes Generados', value: 156, icon: <LineChartOutlined />, color: '#fa8c16' },
 ];
 
 const modules = [
-  { title: 'Usuarios', description: 'Gestión completa de usuarios del sistema', icon: <UserOutlined />, color: '#1890ff', path: '/users' },
-  { title: 'Niños', description: 'Registro y seguimiento de pacientes', icon: <SmileOutlined />, color: '#f107a3', path: '/children' },
-  { title: 'Evaluadores', description: 'Control y administración de evaluadores', icon: <TeamOutlined />, color: '#722ed1', path: '/evaluators' },
-  { title: 'Evaluaciones', description: 'Administración de pruebas y resultados', icon: <BarChartOutlined />, color: '#52c41a', path: '/evaluations' },
-  { title: 'Ítems de Test', description: 'Gestión de ítems y preguntas de evaluación', icon: <FileTextOutlined />, color: '#f7b801', path: '/test-items' },
-  { title: 'Reportes', description: 'Visualización y análisis de reportes', icon: <LineChartOutlined />, color: '#13c2c2', path: '/reportes' },
-];
-
-const quickActions = [
-  { label: 'Registrar Niño', color: '#e6f7ff', icon: <HeartOutlined />, path: '/children/register' },
-  { label: 'Nueva Evaluación', color: '#f6ffed', icon: <BarChartOutlined />, path: '/evaluations/new' },
-  { label: 'Ver Reportes', color: '#f9f0ff', icon: <LineChartOutlined />, path: '/reportes' },
+  {
+    title: 'Usuarios',
+    description: 'Gestión completa de usuarios del sistema',
+    icon: <UserOutlined />,
+    color: '#1890ff',
+    path: '/users',
+  },
+  {
+    title: 'Niños',
+    description: 'Registro y seguimiento de pacientes',
+    icon: <SmileOutlined />,
+    color: '#f107a3',
+    path: '/children',
+  },
+  {
+    title: 'Evaluadores',
+    description: 'Control y administración de evaluadores',
+    icon: <TeamOutlined />,
+    color: '#722ed1',
+    path: '/evaluators',
+  },
+  {
+    title: 'Ítems de Test',
+    description: 'Gestión de ítems y preguntas de evaluación',
+    icon: <UserOutlined />,
+    color: '#f7b801',
+    path: '/test-items',
+  },
 ];
 
 const HomePage = () => {
@@ -80,7 +93,12 @@ const HomePage = () => {
       <Row gutter={16} style={{ marginBottom: 32 }}>
         {summaryData.map((item, idx) => (
           <Col xs={24} sm={12} md={6} key={idx}>
-            <Card style={{ borderRadius: 12 }}>
+            <Card
+              style={{
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              }}
+            >
               <Statistic
                 title={item.title}
                 value={item.value}
@@ -101,74 +119,32 @@ const HomePage = () => {
         title={<Title level={4} style={{ margin: 0 }}>Módulos del Sistema</Title>}
         bodyStyle={{ padding: 24 }}
       >
-        <Row gutter={[32, 32]}>
+        <Row gutter={[24, 24]}>
           {modules.map((mod, idx) => (
-            <Col xs={24} sm={12} md={8} key={idx}>
+            <Col xs={24} sm={12} md={6} key={idx}>
               <Card
                 hoverable
                 style={{
                   borderRadius: 16,
-                  minHeight: 220,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
+                  height: 240,
                   textAlign: 'center',
-                  border: `2px solid ${mod.color}`,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  padding: 16,
+                  border: `1.5px solid ${mod.color}`,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                  transition: 'transform 0.3s ease',
                 }}
                 onClick={() => navigate(mod.path)}
-              >
-                <div style={{ fontSize: 48, color: mod.color, marginBottom: 12 }}>{mod.icon}</div>
-                <Title level={5} style={{ marginBottom: 8 }}>{mod.title}</Title>
-                <Text style={{ marginBottom: 8, color: '#888' }}>{mod.description}</Text>
-                <Button
-                  type="primary"
-                  style={{
-                    background: mod.color,
-                    borderColor: mod.color,
-                    marginTop: 20,
-                    alignSelf: 'center',
-                    width: '60%',
-                    maxWidth: 150,
-                  }}
-                >
-                  Acceder
-                </Button>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Card>
-
-      {/* Quick Actions */}
-      <Card
-        style={{ borderRadius: 16 }}
-        title={<Title level={5} style={{ margin: 0 }}>Acciones Rápidas</Title>}
-        bodyStyle={{ padding: 24 }}
-      >
-        <Row gutter={16}>
-          {quickActions.map((action, idx) => (
-            <Col xs={24} sm={8} key={idx}>
-              <Button
-                block
-                size="large"
-                style={{
-                  background: action.color,
-                  border: 'none',
-                  borderRadius: 12,
-                  fontWeight: 600,
-                  fontSize: 16,
+                bodyStyle={{
+                  padding: 20,
                   display: 'flex',
-                  alignItems: 'center',
+                  flexDirection: 'column',
                   justifyContent: 'center',
-                  marginBottom: 8,
+                  alignItems: 'center',
                 }}
-                icon={action.icon}
-                onClick={() => navigate(action.path)}
               >
-                {action.label}
-              </Button>
+                <div style={{ fontSize: 40, color: mod.color, marginBottom: 12 }}>{mod.icon}</div>
+                <Title level={5} style={{ marginBottom: 6 }}>{mod.title}</Title>
+                <Text style={{ color: '#777' }}>{mod.description}</Text>
+              </Card>
             </Col>
           ))}
         </Row>

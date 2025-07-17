@@ -1,7 +1,7 @@
-import api from "./apiService";
 import type { User, UserPayload } from "../models/User";
+import api from "./apiService";
 
-const API_URL = "http://localhost:8082/api/users";
+const API_URL = "users"; // ✅ corregido
 
 const getAll = async (): Promise<User[]> => {
   const response = await api.get(API_URL);

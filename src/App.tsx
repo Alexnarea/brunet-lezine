@@ -7,7 +7,6 @@ import UsersPage from "./pages/UsersPage";
 import ChildrenPage from "./pages/ChildrenPage";
 import ChildDetail from "./pages/ChilProfilePage";
 import EvaluatorsPage from "./pages/EvaluatorsPage";
-import EvaluationsListPage from "./pages/EvaluationsListPage";
 import EvaluationDetailPage from "./pages/EvaluationDetailPage";
 import EvaluacionPage from "./pages/EvaluationsPage";
 import TestItemsPage from "./pages/TestItemPage";
@@ -49,9 +48,6 @@ const App = () => {
             <Menu.Item key="/evaluators">
               <Link to="/evaluators">Evaluadores</Link>
             </Menu.Item>
-            <Menu.Item key="/evaluations">
-              <Link to="/evaluations">Evaluaciones</Link>
-            </Menu.Item>
             <Menu.Item key="/test-items">
               <Link to="/test-items">Ítems de Test</Link>
             </Menu.Item>
@@ -76,7 +72,6 @@ const App = () => {
           <Route path="/children/:id" element={<PrivateRoute><ChildDetail /></PrivateRoute>} />
           <Route path="/children/:childId/evaluation" element={<PrivateRoute><EvaluacionPage /></PrivateRoute>} />
           <Route path="/evaluators" element={<PrivateRoute requiredRole="ROLE_ADMIN"><EvaluatorsPage /></PrivateRoute>} />
-          <Route path="/evaluations" element={<PrivateRoute><EvaluationsListPage /></PrivateRoute>} />
           <Route path="/evaluations/:id" element={<PrivateRoute><EvaluationDetailPage /></PrivateRoute>} />
           <Route path="/evaluations/new/:childId" element={<PrivateRoute><EvaluacionPage /></PrivateRoute>} />
           <Route path="/test-items" element={<PrivateRoute><TestItemsPage /></PrivateRoute>} />

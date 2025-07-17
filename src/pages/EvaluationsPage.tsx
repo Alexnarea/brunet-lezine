@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Typography, message, Card, Checkbox } from "antd";
+import { UserOutlined, CalendarOutlined, FileTextOutlined } from "@ant-design/icons";
 
 import childrenService from "../service/ChildrenService";
 import testItemService from "../service/TestItemService";
@@ -116,21 +117,69 @@ const EvaluacionPage: React.FC = () => {
   const formatAge = (months: number): string => {
     const years = Math.floor(months / 12);
     const remMonths = months % 12;
-    return `${years} años ${remMonths} meses`;
+    return `${years} año${years !== 1 ? "s" : ""} ${remMonths} mes${remMonths !== 1 ? "es" : ""}`;
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <Card style={{ marginBottom: 24, backgroundColor: "#f0f2f5" }}>
-        <Title level={3}>Evaluación de {child?.fullName || "cargando..."}</Title>
-        <p>Edad cronológica: {formatAge(edadReal)}</p>
-        <p>Evaluador: {currentUser?.sub}</p>
+      {/* Cabecera inspirada en tu imagen */}
+      <Card
+        bordered={false}
+        style={{
+          marginBottom: 24,
+          borderRadius: 16,
+          padding: 24,
+          background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+          color: '#fff',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{
+              width: 48,
+              height: 48,
+              borderRadius: 12,
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 24,
+            }}>
+              🧠
+            </div>
+            <div>
+              <Title level={3} style={{ margin: 0, color: '#fff' }}>
+                Nueva Evaluación
+              </Title>
+              <p style={{ margin: 0, color: '#e0e0e0' }}>
+                Evaluación del desarrollo cognitivo
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginTop: 12 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <UserOutlined />
+              <strong>{child?.fullName}</strong>
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <CalendarOutlined />
+              <span>Edad: <strong>{formatAge(edadReal)}</strong></span>
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <FileTextOutlined />
+              <span>Evaluador: <strong>{currentUser?.sub}</strong></span>
+            </span>
+          </div>
+        </div>
       </Card>
 
+      {/* Ítems por grupo de edad */}
       {Object.entries(groupedItems)
         .sort(([a], [b]) => Number(a) - Number(b))
         .map(([age, group]) => (
-          <Card key={age} title={formatAge(Number(age))} style={{ marginBottom: 16 }}>
+          <Card key={age} title={formatAge(Number(age))} style={{ marginBottom: 16, borderRadius: 12 }}>
             {group.map(item => (
               <div key={item.id} style={{ marginBottom: 8 }}>
                 <Checkbox
