@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Card, Button, Typography, Row, Col, Modal, message, Select, Form, Input, DatePicker, Tag, Space
+  Card, Button, Typography, Row, Col, Modal, message, Select, Form, Input, DatePicker, Tag, Space, Spin
 } from 'antd';
-import { ArrowLeft, Baby, CalendarCheck, CircleUserRound, FileEdit, LineChart, FilePlus2, Filter, Award } from 'lucide-react';
+import {
+  ArrowLeft, Baby, CalendarCheck, CircleUserRound,
+  FileEdit, LineChart, FilePlus2, Filter, Award
+} from 'lucide-react';
 import moment from 'moment';
 
 import childrenService from '../service/ChildrenService';
@@ -27,16 +30,19 @@ const formatAge = (months: number) => {
 const ChildDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const [child, setChild] = useState<Children | null>(null);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [filteredEvaluations, setFilteredEvaluations] = useState<Evaluation[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
 
   useEffect(() => {
     if (!id) return;
     const loadData = async () => {
+      setLoading(true);
       try {
         const childFound = await childrenService.getOne(id);
         const allEvaluations = await evaluationService.getAll();
@@ -47,6 +53,8 @@ const ChildDetail: React.FC = () => {
       } catch (error) {
         message.error('Error al cargar datos');
         setChild(null);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
@@ -63,12 +71,22 @@ const ChildDetail: React.FC = () => {
     }
   }, [selectedYear, evaluations]);
 
-  if (!child) return <div style={{ padding: 24 }}>Niño no encontrado</div>;
+  if (loading) {
+    return (
+      <div style={{ padding: 80, textAlign: 'center' }}>
+        <Spin size="large" tip="Cargando perfil del niño..." />
+      </div>
+    );
+  }
+
+  if (!child) {
+    return <div style={{ padding: 24 }}>Niño no encontrado</div>;
+  }
 
   const birthDate = new Date(child.birthdate);
   const today = new Date();
   const ageInMonths = (today.getFullYear() - birthDate.getFullYear()) * 12 +
-                      (today.getMonth() - birthDate.getMonth());
+    (today.getMonth() - birthDate.getMonth());
 
   const openEditModal = () => {
     form.setFieldsValue({
@@ -124,17 +142,17 @@ const ChildDetail: React.FC = () => {
     )
   ).sort((a, b) => b - a);
 
-  const latestEvalId = evaluations.length > 0 
+  const latestEvalId = evaluations.length > 0
     ? evaluations.reduce((latest, current) =>
-        new Date(current.applicationDate || 0) > new Date(latest.applicationDate || 0) ? current : latest
-      ).id
+      new Date(current.applicationDate || 0) > new Date(latest.applicationDate || 0) ? current : latest
+    ).id
     : null;
 
   const genderColor = child.gender === 'Masculino'
     ? 'blue'
     : child.gender === 'Femenino'
-    ? 'magenta'
-    : 'gray';
+      ? 'magenta'
+      : 'gray';
 
   return (
     <div style={{ padding: 24 }}>
@@ -211,8 +229,8 @@ const ChildDetail: React.FC = () => {
               filteredEvaluations.map(evaluation => {
                 const cdColor = evaluation.coefficient != null
                   ? evaluation.coefficient > 0.8 ? 'green'
-                  : evaluation.coefficient > 0.5 ? 'orange'
-                  : 'red'
+                    : evaluation.coefficient > 0.5 ? 'orange'
+                      : 'red'
                   : 'default';
 
                 return (
@@ -278,7 +296,13 @@ const ChildDetail: React.FC = () => {
           <Form.Item name="fullName" label="Nombre completo" rules={[{ required: true }]}> <Input /> </Form.Item>
           <Form.Item name="nui" label="NUI" rules={[{ required: true }]}> <Input /> </Form.Item>
           <Form.Item name="birthdate" label="Fecha de nacimiento" rules={[{ required: true }]}> <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /> </Form.Item>
-          <Form.Item name="gender" label="Género" rules={[{ required: true }]}> <Select placeholder="Selecciona un género"> <Option value="Masculino">Masculino</Option> <Option value="Femenino">Femenino</Option> <Option value="Otro">Otro</Option> </Select> </Form.Item>
+          <Form.Item name="gender" label="Género" rules={[{ required: true }]}>
+            <Select placeholder="Selecciona un género">
+              <Option value="Masculino">Masculino</Option>
+              <Option value="Femenino">Femenino</Option>
+              <Option value="Otro">Otro</Option>
+            </Select>
+          </Form.Item>
         </Form>
       </Modal>
     </div>

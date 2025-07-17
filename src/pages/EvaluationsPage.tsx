@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Typography, message, Card, Checkbox } from "antd";
+import { Button, Typography, message, Card, Checkbox, Spin } from "antd";
 import { UserOutlined, CalendarOutlined, FileTextOutlined } from "@ant-design/icons";
 
 import childrenService from "../service/ChildrenService";
@@ -21,6 +21,7 @@ const EvaluacionPage: React.FC = () => {
   const [child, setChild] = useState<Children | null>(null);
   const [edadReal, setEdadReal] = useState<number>(0);
   const [items, setItems] = useState<EvaluationItem[]>([]);
+  const [saving, setSaving] = useState(false); // ✅ Estado de guardado
 
   const currentUser = getCurrentUserFromToken();
 
@@ -80,6 +81,8 @@ const EvaluacionPage: React.FC = () => {
       return;
     }
 
+    setSaving(true); // ✅ Inicia spinner
+
     const formattedResponses = items.map(item => ({
       itemId: item.id,
       passed: item.completed,
@@ -104,6 +107,8 @@ const EvaluacionPage: React.FC = () => {
     } catch (error: any) {
       console.error("❌ Error al guardar evaluación:", error.response?.data || error.message);
       message.error("Error al guardar evaluación");
+    } finally {
+      setSaving(false); // ✅ Finaliza spinner
     }
   };
 
@@ -120,9 +125,16 @@ const EvaluacionPage: React.FC = () => {
     return `${years} año${years !== 1 ? "s" : ""} ${remMonths} mes${remMonths !== 1 ? "es" : ""}`;
   };
 
+  if (saving) {
+    return (
+      <div style={{ padding: 80, textAlign: "center" }}>
+        <Spin size="large" tip="Guardando evaluación..." />
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: 20 }}>
-      {/* Cabecera inspirada en tu imagen */}
       <Card
         bordered={false}
         style={{
@@ -175,7 +187,6 @@ const EvaluacionPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Ítems por grupo de edad */}
       {Object.entries(groupedItems)
         .sort(([a], [b]) => Number(a) - Number(b))
         .map(([age, group]) => (
@@ -193,9 +204,14 @@ const EvaluacionPage: React.FC = () => {
           </Card>
         ))}
 
-      <Button type="primary" onClick={handleGuardar} style={{ marginTop: 16 }}>
-        Guardar Evaluación
-      </Button>
+      <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+        <Button type="default" onClick={() => navigate(`/children/${child?.id}`)}>
+          Cancelar
+        </Button>
+        <Button type="primary" onClick={handleGuardar}>
+          Guardar Evaluación
+        </Button>
+      </div>
     </div>
   );
 };
