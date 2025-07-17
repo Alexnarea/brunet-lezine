@@ -1,7 +1,7 @@
 import type { EvaluationResult,EvaluationResultPayload } from "../models/GlobalResul";
 import api from "./apiService";
 
-const BASE_URL = "http://localhost:8082/global";
+const BASE_URL = "/global-results";
 
 const resultGlobService = {
   getAll: async (): Promise<EvaluationResult[]> => {

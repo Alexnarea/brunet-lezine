@@ -2,7 +2,7 @@
 import type { TestItem, TestItemPayload } from "../models/TestItem";
 import api from "./apiService";
 
-const BASE_URL = "http://localhost:8082/api/test-items";
+const BASE_URL = "/test-items";
 
 const testItemService = {
   getAll: async (): Promise<TestItem[]> => {

@@ -1,4 +1,3 @@
-//import axios from "axios";
 import api from "./apiService";
 
 // src/service/evaluationsService.ts
@@ -9,7 +8,7 @@ import type {
   EvaluationDetail
 } from "../models/Evaluation";
 
-const BASE_URL = "http://localhost:8082/api/evaluations";
+const BASE_URL = "/evaluations";
 
 const EvaluationsService = {
   getAll: async (): Promise<Evaluation[]> => {

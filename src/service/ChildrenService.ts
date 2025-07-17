@@ -2,7 +2,7 @@
 import api from "./apiService";
 import type { ChildPayload, Children } from "../models/Children";
 
-const BASE_URL = "http://localhost:8082/children";
+const BASE_URL = "/children";
 
 const childrenService = {
   getAll: async (): Promise<Children[]> => {
@@ -11,9 +11,9 @@ const childrenService = {
   },
 
   getOne: async (id: string): Promise<Children> => {
-  const response = await api.get(`${BASE_URL}/${id}`);
-  return response.data.data;
-},
+    const response = await api.get(`${BASE_URL}/${id}`);
+    return response.data.data;
+  },
 
   create: async (payload: ChildPayload): Promise<Children> => {
     const response = await api.post(BASE_URL, payload);
