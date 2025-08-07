@@ -2,8 +2,7 @@ import axios from 'axios';
 import AuthService from './authService';
 
 const api = axios.create({
-baseURL: 'https://api.brunetlezinetest.com/api',
-  //baseURL: 'http://localhost:8082/api'
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
