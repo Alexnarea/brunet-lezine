@@ -42,7 +42,7 @@ const EvaluationsService = {
 
   // ✅ Esto es correcto
 getAdminDashboard: async (): Promise<AdminDashboardDto> => {
-  const response = await api.get(`/evaluations/dashboard`);
+  const response = await api.get(`${BASE_URL}/dashboard/admin`);
   return response.data;
 },
 
