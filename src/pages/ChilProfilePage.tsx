@@ -193,7 +193,7 @@ const ChildDetail: React.FC = () => {
 
             <div style={{ marginTop: 16 }}>
               <Text strong><CalendarCheck size={14} style={{ marginRight: 6 }} /> Fecha de Nacimiento:</Text>
-              <p>{birthDate.toLocaleDateString('es-ES')}</p>
+             <p>{moment(child.birthdate).format("DD/MM/YYYY")}</p>
               <Text strong><Baby size={14} style={{ marginRight: 6 }} /> Edad:</Text>
               <p>{formatAge(ageInMonths)}</p>
               <Text strong>NUI:</Text>
