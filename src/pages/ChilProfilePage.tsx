@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Card, Button, Typography, Row, Col, Modal, message, Select, Form, Input, DatePicker, Tag, Space, Spin
+  Card, Button, Typography, Row, Col, Modal, message, Select, Form, Input, DatePicker, Tag, Spin
 } from 'antd';
 import {
   ArrowLeft, Baby, CalendarCheck, CircleUserRound,
@@ -216,7 +216,7 @@ const ChildDetail: React.FC = () => {
                   <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                   <Tooltip
                     formatter={(value: number) => [`${value.toFixed(2)}%`, 'Coeficiente']}
-                    labelFormatter={(label: string, payload) => {
+                    labelFormatter={(_label: string, payload) => {
                       const evalData = payload?.[0]?.payload;
                       return `Fecha: ${evalData?.rawDate}\nClasificación: ${evalData?.classification}`;
                     }}

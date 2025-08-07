@@ -9,7 +9,7 @@ import {
   message,
   Popconfirm,
 } from "antd";
-import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import type { TestItem, TestItemPayload } from "../models/TestItem";
 import testItemService from "../service/TestItemService";
 
