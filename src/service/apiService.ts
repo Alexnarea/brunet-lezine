@@ -2,7 +2,7 @@ import axios from 'axios';
 import AuthService from './authService';
 
 const api = axios.create({
-baseURL: 'https://api.brunetlezinetest.com/api',
+baseURL: 'https://api.brunetlezinetest.com',
   //baseURL: 'http://localhost:8082/api'
 });
 
