@@ -1,6 +1,5 @@
 import api from './apiService';
 import type { ReportDto } from '../models/Report';
-import { saveAs } from 'file-saver';
 
 const BASE_URL = '/reports';
 
