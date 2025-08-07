@@ -1,4 +1,3 @@
-// src/pages/TestItemsPage.tsx
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -10,6 +9,7 @@ import {
   message,
   Popconfirm,
 } from "antd";
+import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import type { TestItem, TestItemPayload } from "../models/TestItem";
 import testItemService from "../service/TestItemService";
 
@@ -72,30 +72,6 @@ const TestItemsPage: React.FC = () => {
     }
   };
 
-  const columns = [
-    { title: "Descripción", dataIndex: "description", key: "description" },
-    { title: "Edad Referencia (meses)", dataIndex: "referenceAgeMonths", key: "referenceAgeMonths" },
-    { title: "Orden", dataIndex: "itemOrder", key: "itemOrder" },
-    { title: "Dominio", dataIndex: "domainId", key: "domainId" },
-    {
-      title: "Acciones",
-      key: "actions",
-      render: (_: any, record: TestItem) => (
-        <>
-          <Button type="link" onClick={() => openModal(record)}>Editar</Button>
-          <Popconfirm
-            title="¿Seguro que quieres eliminar este ítem?"
-            onConfirm={() => onDelete(record.id)}
-            okText="Sí"
-            cancelText="No"
-          >
-            <Button type="link" danger>Eliminar</Button>
-          </Popconfirm>
-        </>
-      ),
-    },
-  ];
-
   const handleSearch = (value: string) => {
     setSearch(value);
     const lowerValue = value.toLowerCase();
@@ -109,25 +85,52 @@ const TestItemsPage: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <Input.Search
-        placeholder="Buscar por descripción o dominio"
-        value={search}
-        onChange={(e) => handleSearch(e.target.value)}
-        style={{ marginBottom: 16, maxWidth: 400 }}
-      />
+      {/* Título y acciones */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 style={{ margin: 0 }}>Gestión de Ítems</h2>
+        <div style={{ display: "flex", gap: 12 }}>
+          <Input.Search
+            placeholder="Buscar por descripción o dominio"
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ width: 250 }}
+          />
+          <Button type="primary" onClick={() => openModal()} icon={<Plus size={16} />}>Nuevo Ítem</Button>
+        </div>
+      </div>
 
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
-        Nuevo Ítem
-      </Button>
-
+      {/* Tabla */}
       <Table
         dataSource={filteredItems}
-        columns={columns}
+        columns={[
+          { title: "Descripción", dataIndex: "description", key: "description" },
+          { title: "Edad Referencia (meses)", dataIndex: "referenceAgeMonths", key: "referenceAgeMonths" },
+          { title: "Orden", dataIndex: "itemOrder", key: "itemOrder" },
+          { title: "Dominio", dataIndex: "domainId", key: "domainId" },
+          {
+            title: "Acciones",
+            key: "actions",
+            render: (_: any, record: TestItem) => (
+              <>
+                <Button type="text" icon={<Pencil size={16} />} onClick={() => openModal(record)} />
+                <Popconfirm
+                  title="¿Seguro que quieres eliminar este ítem?"
+                  onConfirm={() => onDelete(record.id)}
+                  okText="Sí"
+                  cancelText="No"
+                >
+                  <Button type="text" danger icon={<Trash2 size={16} />} />
+                </Popconfirm>
+              </>
+            ),
+          },
+        ]}
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 5 }}
       />
 
+      {/* Modal */}
       <Modal
         title={editingItem ? "Editar Ítem" : "Nuevo Ítem"}
         open={modalVisible}
@@ -136,18 +139,10 @@ const TestItemsPage: React.FC = () => {
         okText="Guardar"
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item name="description" label="Descripción" rules={[{ required: true }]}>
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item name="referenceAgeMonths" label="Edad referencia (meses)" rules={[{ required: true }]}>
-            <InputNumber style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item name="itemOrder" label="Orden del ítem" rules={[{ required: true }]}>
-            <InputNumber style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item name="domainId" label="ID del Dominio" rules={[{ required: true }]}>
-            <InputNumber style={{ width: "100%" }} />
-          </Form.Item>
+          <Form.Item name="description" label="Descripción" rules={[{ required: true }]}> <Input.TextArea /> </Form.Item>
+          <Form.Item name="referenceAgeMonths" label="Edad referencia (meses)" rules={[{ required: true }]}> <InputNumber style={{ width: "100%" }} /> </Form.Item>
+          <Form.Item name="itemOrder" label="Orden del ítem" rules={[{ required: true }]}> <InputNumber style={{ width: "100%" }} /> </Form.Item>
+          <Form.Item name="domainId" label="ID del Dominio" rules={[{ required: true }]}> <InputNumber style={{ width: "100%" }} /> </Form.Item>
         </Form>
       </Modal>
     </div>

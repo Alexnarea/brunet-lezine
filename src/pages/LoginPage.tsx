@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message, Form, Input, Button, Checkbox, Typography, Card } from 'antd';
-import { UserOutlined, LockOutlined, SafetyOutlined, HeartOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  message,
+  Form,
+  Input,
+  Button,
+  Checkbox,
+  Typography,
+  Card,
+} from 'antd';
+import {
+  UserOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  HeartOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 import AuthService from '../service/authService';
 import './LoginPage.css';
 
@@ -14,11 +28,23 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (values: { username: string; password: string }) => {
     setLoading(true);
-    setLoginError(null);  // Limpia errores previos
+    setLoginError(null);
+
     try {
       await AuthService.login(values.username, values.password);
       message.success('Login exitoso');
-      navigate('/');
+
+      // 🔐 Redirige según el rol
+      const roles = AuthService.getRole();
+
+      if (roles.includes("ROLE_ADMIN")) {
+        navigate('/'); // o /admin/dashboard si tienes
+      } else if (roles.includes("ROLE_EVALUATOR")) {
+        navigate('/');
+      } else {
+        navigate('/children');
+      }
+
     } catch (err: any) {
       console.error('Error en login:', err);
 
@@ -29,8 +55,7 @@ const LoginPage: React.FC = () => {
         errorMsg = err.message;
       }
 
-      setLoginError(errorMsg);  // Mostrar el mensaje debajo del form
-      // message.error(errorMsg, 3); // Opcional: si quieres el popup
+      setLoginError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -43,7 +68,9 @@ const LoginPage: React.FC = () => {
           <div className="login-logo">
             <SafetyOutlined className="login-logo-icon" />
             <div>
-              <Title level={4} className="login-logo-title">Sistema de Evaluación</Title>
+              <Title level={4} className="login-logo-title">
+                Sistema de Evaluación
+              </Title>
               <Text>Desarrollo Infantil</Text>
             </div>
           </div>
@@ -51,8 +78,9 @@ const LoginPage: React.FC = () => {
             Bienvenido al <span className="highlight">Sistema Profesional</span>
           </Title>
           <Text>
-            Plataforma integral para la evaluación y seguimiento del desarrollo cognitivo infantil.
-            Herramientas profesionales para especialistas en salud.
+            Plataforma integral para la evaluación y seguimiento del desarrollo
+            cognitivo infantil. Herramientas profesionales para especialistas en
+            salud.
           </Text>
           <div className="login-features">
             <div className="feature">
@@ -73,11 +101,14 @@ const LoginPage: React.FC = () => {
 
       <div className="login-right">
         <Card className="login-card">
-          <Title level={4} className="login-card-title">Iniciar Sesión</Title>
+          <Title level={4} className="login-card-title">
+            Iniciar Sesión
+          </Title>
           <Text type="secondary" className="login-card-subtitle">
             Accede a tu cuenta profesional
           </Text>
-          <Form onFinish={handleLogin} layout="vertical">
+
+          <Form onFinish={handleLogin} layout="vertical" autoComplete="off">
             <Form.Item
               name="username"
               label="Usuario"
@@ -85,6 +116,7 @@ const LoginPage: React.FC = () => {
             >
               <Input prefix={<UserOutlined />} placeholder="Ingrese su usuario" />
             </Form.Item>
+
             <Form.Item
               name="password"
               label="Contraseña"
@@ -92,12 +124,16 @@ const LoginPage: React.FC = () => {
             >
               <Input.Password prefix={<LockOutlined />} placeholder="Ingrese su contraseña" />
             </Form.Item>
+
             <Form.Item>
               <div className="login-card-options">
                 <Checkbox>Recordarme</Checkbox>
-                <a href="#">¿Olvidaste tu contraseña?</a>
+                <Button type="link" size="small" style={{ padding: 0 }}>
+                  ¿Olvidaste tu contraseña?
+                </Button>
               </div>
             </Form.Item>
+
             <Form.Item>
               <Button
                 type="primary"
@@ -110,7 +146,6 @@ const LoginPage: React.FC = () => {
               </Button>
             </Form.Item>
 
-            {/* Mostrar mensaje de error debajo del botón */}
             {loginError && (
               <div style={{ color: 'red', textAlign: 'center' }}>
                 {loginError}

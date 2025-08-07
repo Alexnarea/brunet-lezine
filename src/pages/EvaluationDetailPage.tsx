@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Card, Typography, Button, Table, message } from "antd";
+import { Card, Typography, Button, Table, message, Grid } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import EvaluationsService from "../service/evaluationsService";
 import type { EvaluationDetail, EvaluationItem } from "../models/Evaluation";
@@ -8,11 +8,13 @@ import { ArrowLeftOutlined, CalendarOutlined, UserOutlined } from "@ant-design/i
 import { getCurrentUserFromToken } from "../utils/jwtHelper";
 
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const EvaluationDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const screens = useBreakpoint();
   const childId = location.state?.childId;
 
   const [evaluation, setEvaluation] = useState<EvaluationDetail | null>(null);
@@ -85,85 +87,80 @@ const EvaluationDetailPage: React.FC = () => {
         Volver
       </Button>
 
-      {/* Cabecera y resultados en una sola tarjeta */}
- <Card
-  bordered={false}
-  style={{
-    borderRadius: 12,
-    padding: 24,
-    backgroundColor: "#ffffff",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-    marginBottom: 32,
-  }}
->
-  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <div
+      <Card
+        bordered={false}
         style={{
-          width: 48,
-          height: 48,
-          borderRadius: 8,
-          backgroundColor: "#f0f2f5",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 24,
-          color: "#595959",
+          borderRadius: 12,
+          padding: screens.xs ? 16 : 24,
+          backgroundColor: "#ffffff",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          marginBottom: 32,
         }}
       >
-        📋
-      </div>
-      <div>
-        <Title level={4} style={{ margin: 0 }}>
-          Detalle de Evaluación #{evaluation.id}
-        </Title>
-        <Text type="secondary">Resultados del desarrollo infantil</Text>
-      </div>
-    </div>
-    
-    <div style={{ display: "flex", gap: 32, flexWrap: "wrap", marginTop: 12 }}>
-      <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#595959" }}>
-        <CalendarOutlined />
-        <span>
-          <Text>Fecha: </Text>
-          <Text strong>
-            {evaluation.applicationDate
-              ? new Date(evaluation.applicationDate).toLocaleDateString("es-ES")
-              : "No registrada"}
-          </Text>
-        </span>
-      </span>
-      <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#595959" }}>
-        <UserOutlined />
-        <span>
-          <Text>Evaluador: </Text>
-          <Text strong>{currentUser?.sub || "N/A"}</Text>
-        </span>
-      </span>
-    </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 8,
+                backgroundColor: "#f0f2f5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 24,
+                color: "#595959",
+              }}
+            >
+              📋
+            </div>
+            <div>
+              <Title level={4} style={{ margin: 0 }}>
+                Detalle de Evaluación #{evaluation.id}
+              </Title>
+              <Text type="secondary">Resultados del desarrollo infantil</Text>
+            </div>
+          </div>
 
+          <div style={{ display: "flex", gap: 32, flexWrap: "wrap", marginTop: 12 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#595959" }}>
+              <CalendarOutlined />
+              <span>
+                <Text>Fecha: </Text>
+                <Text strong>
+                  {evaluation.applicationDate
+                    ? new Date(evaluation.applicationDate).toLocaleDateString("es-ES")
+                    : "No registrada"}
+                </Text>
+              </span>
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#595959" }}>
+              <UserOutlined />
+              <span>
+                <Text>Evaluador: </Text>
+                <Text strong>{currentUser?.sub || "N/A"}</Text>
+              </span>
+            </span>
+          </div>
 
-    <div
-      style={{
-        backgroundColor: "#f9f9f9",
-        padding: 20,
-        borderRadius: 8,
-        marginTop: 16,
-        lineHeight: 1.6,
-      }}
-    >
-      <p><Text strong>Edad cronológica (AC):</Text> {ageToString(evaluation.chronologicalAgeMonths)}</p>
-      <p><Text strong>Edad de desarrollo (AD):</Text> {evaluation.resultYears || "No alcanzada"}</p>
-      <p><Text strong>Coeficiente de desarrollo (QD):</Text> {evaluation.coefficient !== undefined ? `${evaluation.coefficient.toFixed(2)}%` : "N/A"}</p>
-      <p><Text strong>Clasificación:</Text> {evaluation.classification || "N/A"}</p>
-      <p><Text strong>Observaciones:</Text> {evaluation.observaciones || "Ninguna"}</p>
-    </div>
-  </div>
-</Card>
+          <div
+            style={{
+              backgroundColor: "#f9f9f9",
+              padding: 20,
+              borderRadius: 8,
+              marginTop: 16,
+              lineHeight: 1.6,
+            }}
+          >
+            <p><Text strong>Edad cronológica (AC):</Text> {ageToString(evaluation.chronologicalAgeMonths)}</p>
+            <p><Text strong>Edad de desarrollo (AD):</Text> {evaluation.resultYears || "No alcanzada"}</p>
+            <p><Text strong>Coeficiente de desarrollo (QD):</Text> {evaluation.coefficient !== undefined ? `${evaluation.coefficient.toFixed(2)}%` : "N/A"}</p>
+            <p><Text strong>Clasificación:</Text> {evaluation.classification || "N/A"}</p>
+            <p><Text strong>Observaciones:</Text> {evaluation.observaciones || "Ninguna"}</p>
+          </div>
+        </div>
+      </Card>
 
-
-
-      {/* Ítems evaluados */}
       <Card title="Ítems Evaluados" style={{ borderRadius: 16 }}>
         {sortedAges.map((age) => (
           <div key={age} style={{ marginBottom: 24 }}>
@@ -173,6 +170,7 @@ const EvaluationDetailPage: React.FC = () => {
               columns={columns}
               rowKey="id"
               pagination={false}
+              scroll={{ x: screens.xs ? 300 : undefined }}
             />
           </div>
         ))}

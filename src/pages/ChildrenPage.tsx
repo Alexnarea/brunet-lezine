@@ -179,18 +179,14 @@ const ChildrenPage: React.FC = () => {
       title: "Acciones",
       key: "actions",
       render: (_: any, record: Children) => (
-        <>
+        <div style={{ display: "flex", gap: 8 }}>
           <Link to={`/children/${record.id}`}>
-            <Eye size={18} style={{ color: "#52c41a", marginRight: 8 }} />
+            <Eye size={18} style={{ color: "#52c41a" }} />
           </Link>
           <Pencil
             size={18}
             onClick={() => openModal(record)}
-            style={{
-              color: "#1890ff",
-              marginRight: 8,
-              cursor: "pointer",
-            }}
+            style={{ color: "#1890ff", cursor: "pointer" }}
           />
           <Popconfirm
             title="¿Estás seguro que deseas eliminar?"
@@ -203,69 +199,76 @@ const ChildrenPage: React.FC = () => {
               style={{ color: "#ff4d4f", cursor: "pointer" }}
             />
           </Popconfirm>
-        </>
+        </div>
       ),
     },
   ];
 
   return (
     <div style={{ padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ background: "#ff4d91", padding: 8, borderRadius: 12 }}>
-            <Heart size={20} color="#fff" />
-          </div>
-          <div>
-            <h2 style={{ margin: 0 }}>Gestión de Niños</h2>
-            <p style={{ margin: 0 }}>Administra la información de los niños registrados</p>
-          </div>
-        </div>
-        <Button
-          type="primary"
-          icon={<Plus size={16} />}
-          onClick={() => openModal()}
+      {/* Cabecera */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
+        {/* Título y acciones */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 16,
+          }}
         >
-          Nuevo Niño
-        </Button>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ background: "#ff4d91", padding: 8, borderRadius: 12 }}>
+              <Heart size={20} color="#fff" />
+            </div>
+            <div>
+              <h2 style={{ margin: 0 }}>Gestión de Niños</h2>
+              <p style={{ margin: 0 }}>Administra la información de los niños registrados</p>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 12 }}>
+            <Input.Search
+              placeholder="Buscar por nombre o NUI"
+              allowClear
+              style={{ width: 250, minWidth: 200 }}
+              onChange={(e) => setSearchText(e.target.value)}
+              value={searchText}
+            />
+            <Button
+              type="primary"
+              icon={<Plus size={16} />}
+              onClick={() => openModal()}
+            >
+              Nuevo Niño
+            </Button>
+          </div>
+        </div>
+
+        {/* Tarjetas resumen */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 200, background: "#fff", padding: 16, borderRadius: 8 }}>
+            <p style={{ margin: 0, fontSize: 12 }}>Total de Niños</p>
+            <p style={{ margin: 0, color: "#1677ff" }}>
+              <User size={18} style={{ marginRight: 4 }} />{children.length}
+            </p>
+          </div>
+          <div style={{ flex: 1, minWidth: 200, background: "#fff", padding: 16, borderRadius: 8 }}>
+            <p style={{ margin: 0, fontSize: 12 }}>Niños</p>
+            <p style={{ margin: 0, color: "#1677ff" }}>
+              <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Masculino").length}
+            </p>
+          </div>
+          <div style={{ flex: 1, minWidth: 200, background: "#fff", padding: 16, borderRadius: 8 }}>
+            <p style={{ margin: 0, fontSize: 12 }}>Niñas</p>
+            <p style={{ margin: 0, color: "#eb2f96" }}>
+              <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Femenino").length}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
-          <p style={{ margin: 0, fontSize: 12 }}>Total de Niños</p>
-          <p style={{ margin: 0, color: "#1677ff" }}>
-            <User size={18} style={{ marginRight: 4 }} />{children.length}
-          </p>
-        </div>
-        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
-          <p style={{ margin: 0, fontSize: 12 }}>Niños</p>
-          <p style={{ margin: 0, color: "#1677ff" }}>
-            <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Masculino").length}
-          </p>
-        </div>
-        <div style={{ flex: 1, background: "#fff", padding: 16, borderRadius: 8 }}>
-          <p style={{ margin: 0, fontSize: 12 }}>Niñas</p>
-          <p style={{ margin: 0, color: "#eb2f96" }}>
-            <User size={18} style={{ marginRight: 4 }} />{children.filter((c) => c.gender === "Femenino").length}
-          </p>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
-        <Input.Search
-          placeholder="Buscar por nombre o NUI"
-          allowClear
-          style={{ width: 300 }}
-          onChange={(e) => setSearchText(e.target.value)}
-          value={searchText}
-        />
-      </div>
-
+      {/* Tabla */}
       <ErrorBoundary>
         <Table
           dataSource={filteredChildren}
@@ -273,9 +276,11 @@ const ChildrenPage: React.FC = () => {
           rowKey="id"
           loading={loading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content" }} // importante para móviles
         />
       </ErrorBoundary>
 
+      {/* Modal */}
       <Modal
         title={editingChild ? "Editar Niño" : "Nuevo Niño"}
         open={modalVisible}
@@ -284,46 +289,17 @@ const ChildrenPage: React.FC = () => {
         okText="Guardar"
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            name="fullName"
-            label="Nombre completo"
-            rules={[
-              {
-                required: true,
-                message: "Por favor ingresa el nombre completo",
-              },
-            ]}
-          >
+          <Form.Item name="fullName" label="Nombre completo" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-
-          <Form.Item
-            name="nui"
-            label="NUI"
-            rules={[{ required: true, message: "Por favor ingresa el NUI" }]}
-          >
+          <Form.Item name="nui" label="NUI" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-
-          <Form.Item
-            name="birthdate"
-            label="Fecha de nacimiento"
-            rules={[
-              {
-                required: true,
-                message: "Por favor ingresa la fecha de nacimiento",
-              },
-            ]}
-          >
+          <Form.Item name="birthdate" label="Fecha de nacimiento" rules={[{ required: true }]}>
             <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
           </Form.Item>
-
-          <Form.Item
-            name="gender"
-            label="Género"
-            rules={[{ required: true, message: "Por favor selecciona un género" }]}
-          >
-            <Select allowClear placeholder="Selecciona un género">
+          <Form.Item name="gender" label="Género" rules={[{ required: true }]}>
+            <Select placeholder="Selecciona un género">
               <Option value="Masculino">Masculino</Option>
               <Option value="Femenino">Femenino</Option>
               <Option value="Otro">Otro</Option>

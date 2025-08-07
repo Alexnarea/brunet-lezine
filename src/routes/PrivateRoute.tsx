@@ -4,28 +4,31 @@ import AuthService from "../service/authService";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
-  requiredRole?: string; // ✅ ahora sí está declarado
+  requiredRoles?: string[]; // permite múltiples roles
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredRole }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredRoles }) => {
   const token = AuthService.getToken();
 
   if (!token) {
     return <Navigate to="/login" />;
   }
 
-  // Validar rol si se requiere
-  if (requiredRole) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const authorities: string = payload["authorities"] || "";
+  const decoded = AuthService.decodeToken(token);
+  const rawAuthorities = decoded?.authorities;
 
-      if (!authorities.includes(requiredRole)) {
-        return <Navigate to="/" />;
-      }
-    } catch (e) {
-      console.error("Error al decodificar el token", e);
-      return <Navigate to="/login" />;
+  // Convertir authorities a un array, ya sea que venga como string separado por comas o como array
+  const userRoles: string[] = Array.isArray(rawAuthorities)
+    ? rawAuthorities
+    : typeof rawAuthorities === "string"
+    ? rawAuthorities.split(",")
+    : [];
+
+  // Verificar si tiene al menos uno de los roles requeridos
+  if (requiredRoles && requiredRoles.length > 0) {
+    const hasPermission = requiredRoles.some(role => userRoles.includes(role));
+    if (!hasPermission) {
+      return <Navigate to="/" />;
     }
   }
 

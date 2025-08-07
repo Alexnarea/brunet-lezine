@@ -34,6 +34,7 @@ const UsersPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<UserModel | null>(null);
   const [form] = Form.useForm();
+  const [searchText, setSearchText] = useState("");
 
   const loadUsers = async () => {
     setLoading(true);
@@ -50,6 +51,12 @@ const UsersPage: React.FC = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  const filteredUsers = users.filter(
+    (u) =>
+      u.username.toLowerCase().includes(searchText.toLowerCase()) ||
+      u.role.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const openModal = (user?: UserModel) => {
     setEditingUser(user || null);
@@ -105,7 +112,6 @@ const UsersPage: React.FC = () => {
     }
   };
 
-  const filteredUsers = users.filter((u) => u.role !== "ADMIN");
   const total = users.length;
   const activos = users.filter((u) => !u.disabled).length;
   const inactivos = total - activos;
@@ -160,10 +166,29 @@ const UsersPage: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <Title level={3}>
-        <User color="#eb2f96" style={{ marginRight: 8 }} />
-        Gestión de Usuarios
-      </Title>
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+        <Col>
+          <Title level={3} style={{ margin: 0 }}>
+            <User color="#eb2f96" style={{ marginRight: 8 }} />
+            Gestión de Usuarios
+          </Title>
+        </Col>
+        <Col>
+          <Input.Search
+            placeholder="Buscar por usuario o rol"
+            onChange={(e) => setSearchText(e.target.value)}
+            style={{ width: 250, marginRight: 8 }}
+            allowClear
+          />
+          <Button
+            type="primary"
+            icon={<PlusCircle size={18} />}
+            onClick={() => openModal()}
+          >
+            Nuevo Usuario
+          </Button>
+        </Col>
+      </Row>
 
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={8}>
@@ -194,15 +219,6 @@ const UsersPage: React.FC = () => {
           </Card>
         </Col>
       </Row>
-
-      <Button
-        type="primary"
-        icon={<PlusCircle size={18} />}
-        onClick={() => openModal()}
-        style={{ marginBottom: 16 }}
-      >
-        Nuevo Usuario
-      </Button>
 
       <Table
         dataSource={filteredUsers}

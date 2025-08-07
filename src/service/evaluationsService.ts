@@ -1,11 +1,11 @@
 import api from "./apiService";
-
-// src/service/evaluationsService.ts
 import type {
   Evaluation,
   EvaluationRequest,
   EvaluationResult,
-  EvaluationDetail
+  EvaluationDetail,
+  AdminDashboardDto,
+  EvaluatorDashboardDto
 } from "../models/Evaluation";
 
 const BASE_URL = "/evaluations";
@@ -38,6 +38,25 @@ const EvaluationsService = {
 
   delete: async (id: number | string): Promise<void> => {
     await api.delete(`${BASE_URL}/${id}`);
+  },
+
+  // 🔷 Dashboard para ADMIN
+  getAdminDashboard: async (): Promise<AdminDashboardDto> => {
+    const response = await api.get(`${BASE_URL}/dashboard/admin`);
+    return response.data;
+  },
+
+  // 🔷 Dashboard para EVALUATOR
+  getEvaluatorDashboardData: async (): Promise<EvaluatorDashboardDto> => {
+    const response = await api.get(`${BASE_URL}/dashboard/evaluator`);
+    return response.data;
+  },
+
+  downloadReport: async (evaluationId: number): Promise<any> => {
+    const response = await api.get(`/evaluations/${evaluationId}/report`, {
+      responseType: 'blob',
+    });
+    return response;
   }
 };
 

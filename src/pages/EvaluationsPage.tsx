@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Typography, message, Card, Checkbox, Spin } from "antd";
+import { Button, Typography, message, Card, Checkbox, Spin, Grid } from "antd";
 import { UserOutlined, CalendarOutlined, FileTextOutlined } from "@ant-design/icons";
 
 import childrenService from "../service/ChildrenService";
@@ -13,15 +13,17 @@ import type { Children } from "../models/Children";
 import type { EvaluationRequest, EvaluationItem, EvaluationResult } from "../models/Evaluation";
 
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
 
 const EvaluacionPage: React.FC = () => {
   const { childId } = useParams<{ childId: string }>();
   const navigate = useNavigate();
+  const screens = useBreakpoint();
 
   const [child, setChild] = useState<Children | null>(null);
   const [edadReal, setEdadReal] = useState<number>(0);
   const [items, setItems] = useState<EvaluationItem[]>([]);
-  const [saving, setSaving] = useState(false); // ✅ Estado de guardado
+  const [saving, setSaving] = useState(false);
 
   const currentUser = getCurrentUserFromToken();
 
@@ -81,7 +83,7 @@ const EvaluacionPage: React.FC = () => {
       return;
     }
 
-    setSaving(true); // ✅ Inicia spinner
+    setSaving(true);
 
     const formattedResponses = items.map(item => ({
       itemId: item.id,
@@ -108,7 +110,7 @@ const EvaluacionPage: React.FC = () => {
       console.error("❌ Error al guardar evaluación:", error.response?.data || error.message);
       message.error("Error al guardar evaluación");
     } finally {
-      setSaving(false); // ✅ Finaliza spinner
+      setSaving(false);
     }
   };
 
@@ -140,7 +142,7 @@ const EvaluacionPage: React.FC = () => {
         style={{
           marginBottom: 24,
           borderRadius: 16,
-          padding: 24,
+          padding: screens.xs ? 16 : 24,
           background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
           color: '#fff',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -204,7 +206,7 @@ const EvaluacionPage: React.FC = () => {
           </Card>
         ))}
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+      <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'wrap' }}>
         <Button type="default" onClick={() => navigate(`/children/${child?.id}`)}>
           Cancelar
         </Button>
