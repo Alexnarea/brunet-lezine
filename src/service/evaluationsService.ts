@@ -40,11 +40,11 @@ const EvaluationsService = {
     await api.delete(`${BASE_URL}/${id}`);
   },
 
-  // 🔷 Dashboard para ADMIN
-  getAdminDashboard: async (): Promise<AdminDashboardDto> => {
-    const response = await api.get(`${BASE_URL}/dashboard/admin`);
-    return response.data;
-  },
+  // ✅ Esto es correcto
+getAdminDashboard: async (): Promise<AdminDashboardDto> => {
+  const response = await api.get(`/evaluations/dashboard`);
+  return response.data;
+},
 
   // 🔷 Dashboard para EVALUATOR
   getEvaluatorDashboardData: async (): Promise<EvaluatorDashboardDto> => {
